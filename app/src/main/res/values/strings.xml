@@ -1,0 +1,52 @@
+<resources>
+    <string name="app_name">Trip remenders</string>
+
+    <string-array name="types">
+        <item>One Direction</item>
+        <item>Round Trip</item>
+    </string-array>
+
+    <string name="Logout">Logout</string>
+
+    <!--    <string name="api_key">AIzaSyBlMqIbdbFUQlw_KBwI45bhlGprUl5jJBI</string>-->
+    <string name="api_key">AIzaSyCVOvMSNN18_AJKQjfKfoWKxsYNF5GNxK0</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="trip_name">Trip Name :</string>
+    <string name="start_point">Start Point :</string>
+    <string name="end_point">End Point : </string>
+    <string name="ex_time">12:59 AM</string>
+    <string name="ex_date">31-12-2021</string>
+    <string name="add_note">Add Note</string>
+    <string name="save">save</string>
+    <string name="ex_address">Al Mandarah QebliMontaza 2, Alexandria Governorate</string>
+    <string name="ex_direction">One Direction</string>
+    <string name="start">start</string>
+    <string name="trip_type">Trip Type:</string>
+    <string name="tripo">T R I P O</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="log_in">Log In</string>
+    <string name="or">or</string>
+    <string name="create_account">Create account</string>
+    <string name="user_name">User name</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="already_have_account_log_in">Already have account ? Log In</string>
+    <string name="facebook_app_id">788241688772045</string>
+    <string name="fb_login_protocol_scheme">fb788241688772045</string>
+    <string name="time">Time</string>
+    <string name="date">Date</string>
+    <string name="status">Status</string>
+    <string name="edit">edit</string>
+    <string name="sync">sync</string>
+    <string name="logout">logout</string>
+
+</resources>

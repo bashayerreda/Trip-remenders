@@ -1,0 +1,64 @@
+{
+  "project_info": {
+    "project_number": "407356148737",
+    "firebase_url": "https://iti-mobile-final-project-default-rtdb.firebaseio.com",
+    "project_id": "iti-mobile-final-project",
+    "storage_bucket": "iti-mobile-final-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:407356148737:android:135faad3a5b9e449edc400",
+        "android_client_info": {
+          "package_name": "com.example.tripremenders"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "407356148737-j38euj8k0v5oopkp497nrhhq7onjnli0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tripremenders",
+            "certificate_hash": "f7fcdb2786e7fdcc8d3c004d61b3b9a90b8a1a5a"
+          }
+        },
+        {
+          "client_id": "407356148737-pioktrh4up6tb2ucu578a3johm0vc78p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tripremenders",
+            "certificate_hash": "ea2d96cf1d020fdc3d7de06ca61b501c516c8b37"
+          }
+        },
+        {
+          "client_id": "407356148737-q4ohkokl16v03mad1g41g91s2q8qht38.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tripremenders",
+            "certificate_hash": "9c8b79c97296ea1699490106ce2c1ef4623d5b5f"
+          }
+        },
+        {
+          "client_id": "407356148737-2a8r3hlddnlcl8s0als6vr6cu2hk0b34.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4ZuS01WoxQz6yKhKiDu9IUsmvlPK0Ws4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "407356148737-2a8r3hlddnlcl8s0als6vr6cu2hk0b34.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
