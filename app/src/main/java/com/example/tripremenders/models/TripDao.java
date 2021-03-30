@@ -11,7 +11,7 @@ import androidx.room.Update;
 import java.util.List;
 
 @Dao
-public interface TripDao {
+public interface TripDao  {
 
     @Query("SELECT * FROM trips")
     LiveData<List<TripModel>> getAllTrips();

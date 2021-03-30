@@ -4,6 +4,9 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,25 +16,22 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.example.tripremenders.R;
 import com.example.tripremenders.adapters.UpcomingTripAdapter;
 import com.example.tripremenders.models.TripModel;
 import com.example.tripremenders.models.TripViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UpcomingTripsFragment extends Fragment {
-
+    public UpcomingTripAdapter.StartTrip setStartTrip = null;
     ArrayList<TripModel> trips;
-   UpcomingTripAdapter tripAdapter;
+   UpcomingTripAdapter upcomingTripAdapter;
     private TripViewModel tripViewModel;
-
-
+      TripModel tripModel;
+      public  UpcomingTripAdapter tripAdapter;
+      RecyclerView recyclerView;
     public UpcomingTripsFragment() {
         // Required empty public constructor
     }
@@ -60,7 +60,6 @@ public class UpcomingTripsFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
-
         RecyclerView recyclerView = getActivity().findViewById(R.id.upcoming_trip_recyclerView);
 
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -70,6 +69,16 @@ public class UpcomingTripsFragment extends Fragment {
                         recyclerView);
 
         recyclerView.setAdapter(upcomingTripAdapter);
+       upcomingTripAdapter.setStartTrip = new UpcomingTripAdapter.StartTrip() {
+            @Override
+            public void onClick(TripModel tripModel) {
+                TripModel newtripModel = new TripModel();
+                newtripModel = tripModel;
+                newtripModel.setStatus(1);
+                tripViewModel.update(newtripModel);
+                DisplayTrack(tripModel.getEndPoint());
+            }
+        };
 
         tripViewModel.getAllUpcomingTrips().observe(this, new Observer<List<TripModel>>() {
             @Override
@@ -82,10 +91,10 @@ public class UpcomingTripsFragment extends Fragment {
     }
     private void DisplayTrack(String sDestination) {
         //if device dosnt have mape installed then redirect it to play store
-
+        https://www.google.com/maps/search/?api=1&query=47.5951518,-122.3316393
         try {
             //when google map installed
-            Uri uri = Uri.parse("https://www.google.co.in/maps/dir/" + "/" + sDestination);
+            Uri uri = Uri.parse("  https://www.google.com/maps/search" + "/" + sDestination);
 
             //Action view with uri
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);

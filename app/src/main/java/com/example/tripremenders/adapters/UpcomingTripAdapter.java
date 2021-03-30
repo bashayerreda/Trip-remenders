@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,24 +23,27 @@ import androidx.transition.Transition;
 import androidx.transition.TransitionListenerAdapter;
 import androidx.transition.TransitionManager;
 
-import java.util.ArrayList;
-
 import com.example.tripremenders.AddTripActivity;
 import com.example.tripremenders.NoteActivity;
 import com.example.tripremenders.R;
 import com.example.tripremenders.models.TripModel;
 import com.example.tripremenders.models.TripViewModel;
 
+import java.util.ArrayList;
+
 public class UpcomingTripAdapter extends RecyclerView.Adapter<UpcomingTripAdapter.ViewHolder> {
 
     ArrayList<TripModel>  trips;
     Context context;
     MenuInflater menuInflater;
-    RecyclerView recyclerView;
-
+   public RecyclerView recyclerView;
+    public StartTrip setStartTrip = null;
+   public TripModel tripModel;
     LinearLayout lastLinearLayoutClickOn;
-
-
+    public interface StartTrip {
+        void onClick(TripModel tripModel);
+    }
+    public UpcomingTripAdapter(){}
     public UpcomingTripAdapter(Context context,
                                ArrayList<TripModel> trips,
                                MenuInflater menuInflater,
@@ -77,12 +81,12 @@ public class UpcomingTripAdapter extends RecyclerView.Adapter<UpcomingTripAdapte
         }
 
         holder.tripLinearLayout.setOnClickListener(v -> {
-
-            if(lastLinearLayoutClickOn != null
-                    && lastLinearLayoutClickOn != holder.buttonsLinearLayout) {
-                lastLinearLayoutClickOn.setVisibility(View.GONE);
+            if (trips.get(position).getTripType() != null) {
+                if (lastLinearLayoutClickOn != null
+                        && lastLinearLayoutClickOn != holder.buttonsLinearLayout) {
+                    lastLinearLayoutClickOn.setVisibility(View.GONE);
+                }
             }
-
             lastLinearLayoutClickOn =  holder.buttonsLinearLayout;
 
             final int visibilityOfButtons = holder.buttonsLinearLayout.getVisibility();
@@ -107,6 +111,15 @@ public class UpcomingTripAdapter extends RecyclerView.Adapter<UpcomingTripAdapte
                             holder.buttonsLinearLayout.getVisibility() == View.GONE  ?
                                     View.VISIBLE : View.GONE );
         });
+        if (setStartTrip != null) {
+            holder.btnStart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setStartTrip.onClick(trips.get(position));
+                }
+            });
+        }
+
 
         holder.editTripButton.setOnClickListener(v -> {
             Intent intent = new Intent(context, AddTripActivity.class);
@@ -159,7 +172,7 @@ public class UpcomingTripAdapter extends RecyclerView.Adapter<UpcomingTripAdapte
 
         LinearLayout buttonsLinearLayout;
 
-
+        Button btnStart;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -172,7 +185,7 @@ public class UpcomingTripAdapter extends RecyclerView.Adapter<UpcomingTripAdapte
             tripeTypeImageView = itemView.findViewById(R.id.trip_type_icon);
             tripLinearLayout = itemView.findViewById(R.id.trip_linear_layout);
             buttonsLinearLayout = itemView.findViewById(R.id.buttons_linear_layout);
-
+            btnStart = itemView.findViewById(R.id.btn_start);
             editTripButton =  itemView.findViewById(R.id.edit_trip);
             addNoteTripButton = itemView.findViewById(R.id.add_note_trip);
             deleteTripButton = itemView.findViewById(R.id.delete_trip);

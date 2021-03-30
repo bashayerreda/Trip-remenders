@@ -17,10 +17,10 @@ import androidx.transition.Transition;
 import androidx.transition.TransitionListenerAdapter;
 import androidx.transition.TransitionManager;
 
-import java.util.ArrayList;
-
 import com.example.tripremenders.R;
 import com.example.tripremenders.models.TripModel;
+
+import java.util.ArrayList;
 
 public class PastTripAdapter extends RecyclerView.Adapter<PastTripAdapter.ViewHolder> {
 
@@ -57,7 +57,10 @@ public class PastTripAdapter extends RecyclerView.Adapter<PastTripAdapter.ViewHo
         holder.tripNameTextView.setText(trips.get(position).getName());
         holder.dateTextView.setText(trips.get(position).getDate());
         holder.timeTextView.setText(trips.get(position).getTime());
-        holder.tripStatus.setText(String.valueOf(trips.get(position).getStatus()));
+        if(trips.get(position).getStatus() == 1) {
+
+            holder.tripStatus.setText("Done");
+        }
         holder.startPointTextView.setText(trips.get(position).getStartPoint());
         holder.endPointTextView.setText(trips.get(position).getEndPoint());
         holder.tripTypeTextView.setText(trips.get(position).getTripType());

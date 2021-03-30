@@ -9,27 +9,30 @@ import java.util.List;
 public class TripRepository {
 
     private TripDao tripDao;
-    private final LiveData<List<TripModel>> allTrips;
-    private final LiveData<List<TripModel>> upComingTrips;
-    private final LiveData<List<TripModel>> pastTrips;
+    private LiveData<List<TripModel>> allTrips;
+    private LiveData<List<TripModel>> upComingTrips;
+    private LiveData<List<TripModel>> pastTrips;
 
     TripRepository(Application application) {
      TripDatabase tripDatabase = TripDatabase.getDatabase(application);
         tripDao = tripDatabase.tripDao();
-        allTrips = tripDao.getAllTrips();
-        upComingTrips = tripDao.getAllUpComingTrips();
-        pastTrips = tripDao.getAllPastTrips();
+
     }
 
     public LiveData<List<TripModel>> getAllTrips() {
+        allTrips = tripDao.getAllTrips();
         return allTrips;
     }
 
     public LiveData<List<TripModel>> getAllUpcomingTrips() {
+        upComingTrips = tripDao.getAllUpComingTrips();
         return upComingTrips;
     }
 
     public LiveData<List<TripModel>> getAllPastTrips() {
+
+        pastTrips = tripDao.getAllPastTrips();
+
         return pastTrips;
     }
 

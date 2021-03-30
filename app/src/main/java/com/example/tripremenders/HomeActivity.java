@@ -33,7 +33,8 @@ public class HomeActivity extends AppCompatActivity {
     ViewPager viewPager;
     TabLayout tabLayout;
     Toolbar toolbar;
-
+      FirebaseAuth firebaseAuth;
+      FirebaseUser firebaseUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +48,8 @@ public class HomeActivity extends AppCompatActivity {
         setPagerAdapter();
         setTabLayout();
 
+        //firebaseAuth.getCurrentUser();
+ //firebaseUser.getUid();
 
         final boolean getDataFromFirebase =
                 getIntent().getBooleanExtra("getDataFromFirebase", false);

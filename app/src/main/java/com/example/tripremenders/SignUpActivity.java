@@ -7,8 +7,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -75,6 +77,7 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 signUpUsingEmailPassword();
+
             }
 
         });
@@ -120,10 +123,10 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void signUpUsingEmailPassword() {
 
-        final String username = String.valueOf(inputLayoutUsername.getEditText());
-        final String email = String.valueOf(inputLayoutEmail.getEditText());
-        final String password = String.valueOf(inputLayoutPassword.getEditText());
-        final String confirmPassword = String.valueOf(inputLayoutConfirmPassword.getEditText());
+        final String username =String.valueOf(inputLayoutUsername.getEditText().getText());
+        final String email =String.valueOf(inputLayoutEmail.getEditText().getText());
+        final String password = String.valueOf(inputLayoutPassword.getEditText().getText());
+        final String confirmPassword = String.valueOf(inputLayoutConfirmPassword.getEditText().getText());
 
         if (username.isEmpty()) {
             inputLayoutUsername.setError("enter username");
@@ -131,12 +134,12 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
         if (email.isEmpty()) {
-            inputLayoutEmail.setError("enter email");
+            inputLayoutEmail.setError("enter email address");
             inputLayoutEmail.requestFocus();
             return;
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            inputLayoutEmail.setError("enter correct email");
+            inputLayoutEmail.setError("please match address");
             inputLayoutEmail.requestFocus();
             return;
         }
@@ -146,7 +149,7 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
         if (!(confirmPassword.equals(password))) {
-            inputLayoutConfirmPassword.setError("match password please");
+            inputLayoutConfirmPassword.setError("match password");
             inputLayoutConfirmPassword.requestFocus();
             return;
         }
@@ -168,7 +171,8 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
 
-    private void signUpGoogle() {
+
+        private void signUpGoogle() {
         GoogleSignInOptions googleSignInOptions =
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                         .requestIdToken(getString(R.string.default_web_client_id))

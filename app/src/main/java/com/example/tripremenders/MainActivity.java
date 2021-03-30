@@ -15,14 +15,14 @@ import com.google.firebase.auth.FirebaseAuth;
 public class MainActivity extends AppCompatActivity {
 
     Button buttonLogout;
-
+    Button btntest;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         buttonLogout = findViewById(R.id.Logout);
 
-
+        btntest = findViewById(R.id.test_map);
         buttonLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,6 +50,15 @@ public class MainActivity extends AppCompatActivity {
                         dialog.dismiss();
                     }
                 });
+
+            }
+
+        });
+        btntest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                startActivity(intent);
             }
         });
     }

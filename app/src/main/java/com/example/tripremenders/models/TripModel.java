@@ -2,13 +2,9 @@ package com.example.tripremenders.models;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import java.io.Serializable;
-import java.util.ArrayList;
 
 @Entity(tableName = "trips")
 public class TripModel implements Serializable {
@@ -51,7 +47,8 @@ public class TripModel implements Serializable {
 
     @ColumnInfo(name = "end_Lng")
     private double endPointLng;
-
+    //@ColumnInfo(name = "Lng_Lat")
+    //private double lnglat;
 
     public TripModel() {
     }

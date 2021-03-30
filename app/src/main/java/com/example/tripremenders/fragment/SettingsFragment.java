@@ -3,7 +3,6 @@ package com.example.tripremenders.fragment;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +16,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.tripremenders.MainActivity;
+import com.example.tripremenders.MapsActivity;
 import com.example.tripremenders.R;
 import com.example.tripremenders.RegistrationActivity;
+import com.example.tripremenders.adapters.PastTripAdapter;
 import com.example.tripremenders.models.NoteModel;
 import com.example.tripremenders.models.NoteViewModel;
 import com.example.tripremenders.models.TripModel;
@@ -30,12 +30,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SettingsFragment  extends Fragment {
-
-
+    private TripViewModel tripViewModel;
+    PastTripAdapter pastTripAdapter;
+    ArrayList<TripModel>trips;
+    public static final String SEND_TRIPS_EXTRA = "trips Data";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -127,6 +130,28 @@ public class SettingsFragment  extends Fragment {
                         dialog.dismiss();
                     }
                 });
+            }
+
+        });
+        Button btnmap = view.findViewById(R.id.map);
+        btnmap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TripViewModel tripViewModel =
+                        ViewModelProviders.of(SettingsFragment.this).get(TripViewModel.class);
+                tripViewModel.getAllPastTrips().observe(getActivity(), new Observer<List<TripModel>>() {
+                            @Override
+                            public void onChanged(@Nullable final List<TripModel> tripModels) {
+                                Intent intent = new Intent(getActivity(), MapsActivity.class);
+                                //intent.putExtra("trips Data", tripViewModel.getAllTrips());
+                                Bundle args = new Bundle();
+                                args.putSerializable(SEND_TRIPS_EXTRA, (Serializable) tripModels);
+                                intent.putExtra(SEND_TRIPS_EXTRA,args);
+                                //startActivity(intent);
+                                startActivity(intent);
+                            }
+                        });
+
             }
         });
 
