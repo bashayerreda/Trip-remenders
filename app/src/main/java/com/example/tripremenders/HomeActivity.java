@@ -26,8 +26,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeActivity extends AppCompatActivity {
+    CircleImageView imageViewProfilePicture;
+    FirebaseUser user;
+    String profilePicture;
     private long backPressedTime;
     TripsFragmentPagerAdapter tripsFragmentPagerAdapter;
     ViewPager viewPager;
@@ -39,7 +45,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
+        imageViewProfilePicture = findViewById(R.id.user_logo);
         viewPager = findViewById(R.id.pager);
         tabLayout = findViewById(R.id.tab_layout);
         toolbar = findViewById(R.id.myToolbar);
@@ -47,7 +53,12 @@ public class HomeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         setPagerAdapter();
         setTabLayout();
-
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user.getPhotoUrl() != null) {
+            profilePicture = user.getPhotoUrl().toString();
+            profilePicture += "?type=large";
+            Picasso.get().load(profilePicture).fit().placeholder(R.drawable.user_icon).into(imageViewProfilePicture);
+        }
         //firebaseAuth.getCurrentUser();
  //firebaseUser.getUid();
 

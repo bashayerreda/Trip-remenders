@@ -49,6 +49,7 @@ public class SignUpActivity extends AppCompatActivity {
     private TextInputLayout inputLayoutConfirmPassword;
     private FirebaseAuth firebaseAuth;
     private ImageView googleSignUp, facebookSignUp;
+    ImageView imageViewUserPhotoProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +64,7 @@ public class SignUpActivity extends AppCompatActivity {
         inputLayoutPassword = findViewById(R.id.inputLayout_password);
         inputLayoutConfirmPassword = findViewById(R.id.inputLayout_confirmPassword);
         signUp = findViewById(R.id.btn_sign_up);
-
+        imageViewUserPhotoProfile = findViewById(R.id.user_logo);
         firebaseAuth = FirebaseAuth.getInstance();
 
         googleSignUp.setOnClickListener(new View.OnClickListener() {
