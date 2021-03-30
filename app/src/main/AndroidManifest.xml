@@ -11,13 +11,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TripRemenders">
-        <activity android:name=".UpdateActivity"></activity>
+        <activity
+            android:name=".DialogMessageActivity"
+            android:theme="@style/Theme.AppCompat.Transparent.NoActionBar" />
+
         <activity android:name=".NoteActivity" />
         <activity android:name=".AddTripActivity" />
         <activity android:name=".HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -35,17 +37,30 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+
         <activity android:name=".SplashScreenActivity" />
         <activity android:name=".RegistrationActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".MainActivity" />
+
+        <service
+        android:name=".service.WidgetService"
+        android:enabled="true" />
+
+        <receiver
+            android:name=".broadcast.AlertReceiver"
+            android:enabled="true"
+            android:exported="true" />
+        <receiver
+            android:name=".broadcast.NotificationReceiver"
+            android:enabled="true"
+            android:exported="true" />
+
     </application>
 
 </manifest>

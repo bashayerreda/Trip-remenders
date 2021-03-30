@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Trip remenders</string>
+    <string name="app_name">Tripo</string>
 
     <string-array name="types">
         <item>One Direction</item>
@@ -48,5 +48,6 @@
     <string name="edit">edit</string>
     <string name="sync">sync</string>
     <string name="logout">logout</string>
+    <string name="later">Later</string>
 
 </resources>

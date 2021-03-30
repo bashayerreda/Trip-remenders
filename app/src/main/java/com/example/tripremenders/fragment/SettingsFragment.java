@@ -46,7 +46,7 @@ public class SettingsFragment  extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        Button syncButton = view.findViewById(R.id.sync_button);
+        TextView syncButton = view.findViewById(R.id.sync_button);
         syncButton.setOnClickListener(v -> {
             FirebaseAuth mAuth = FirebaseAuth.getInstance();
             FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -87,7 +87,7 @@ public class SettingsFragment  extends Fragment {
             });
         });
 
-        Button logoutButton = view.findViewById(R.id.Logout);
+        TextView logoutButton = view.findViewById(R.id.Logout);
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
