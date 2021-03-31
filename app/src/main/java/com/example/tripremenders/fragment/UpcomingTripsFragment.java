@@ -20,6 +20,7 @@ import com.example.tripremenders.R;
 import com.example.tripremenders.adapters.UpcomingTripAdapter;
 import com.example.tripremenders.models.TripModel;
 import com.example.tripremenders.models.TripViewModel;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +28,11 @@ import java.util.List;
 public class UpcomingTripsFragment extends Fragment {
     public UpcomingTripAdapter.StartTrip setStartTrip = null;
     ArrayList<TripModel> trips;
-   UpcomingTripAdapter upcomingTripAdapter;
+    UpcomingTripAdapter upcomingTripAdapter;
     private TripViewModel tripViewModel;
-      TripModel tripModel;
-      public  UpcomingTripAdapter tripAdapter;
-      RecyclerView recyclerView;
+    TripModel tripModel;
+    public  UpcomingTripAdapter tripAdapter;
+    RecyclerView recyclerView;
     public UpcomingTripsFragment() {
         // Required empty public constructor
     }
@@ -69,14 +70,13 @@ public class UpcomingTripsFragment extends Fragment {
                         recyclerView);
 
         recyclerView.setAdapter(upcomingTripAdapter);
-       upcomingTripAdapter.setStartTrip = new UpcomingTripAdapter.StartTrip() {
+        upcomingTripAdapter.setStartTrip = new UpcomingTripAdapter.StartTrip() {
             @Override
             public void onClick(TripModel tripModel) {
-                TripModel newtripModel = new TripModel();
-                newtripModel = tripModel;
-                newtripModel.setStatus(1);
-                tripViewModel.update(newtripModel);
-                DisplayTrack(tripModel.getEndPoint());
+//                tripModel.setStatus(1);
+//                tripViewModel.update(tripModel);
+                LatLng latLng = new LatLng(tripModel.getEndPointLat(), tripModel.getEndPointLng());
+                DisplayTrack(latLng);
             }
         };
 
@@ -89,13 +89,14 @@ public class UpcomingTripsFragment extends Fragment {
         });
 
     }
-    private void DisplayTrack(String sDestination) {
+    private void DisplayTrack(LatLng latLng) {
         //if device dosnt have mape installed then redirect it to play store
-        https://www.google.com/maps/search/?api=1&query=47.5951518,-122.3316393
+        //https://www.google.com/maps/search/?api=1&query=47.5951518,-122.3316393
         try {
             //when google map installed
-            Uri uri = Uri.parse("  https://www.google.com/maps/search" + "/" + sDestination);
-
+            Uri uri = Uri.parse("geo:0,0?q="+latLng.longitude + "," + latLng.latitude);
+            /*Uri uri = Uri.parse("https://www.google.com/maps/search/?api&query=" +
+                    latLng.longitude + "," + latLng.latitude); */
             //Action view with uri
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             intent.setPackage("com.google.android.apps.maps");
