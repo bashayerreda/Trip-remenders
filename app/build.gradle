@@ -73,14 +73,16 @@ dependencies {
     //circle Image View
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
+    //picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
     //bubbles
     implementation 'com.txusballesteros:bubbles:1.2.1'
-    implementation 'com.squareup.picasso:picasso:2.71828'
 
     // ???
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
-      //google Api
+    //google Api
     implementation 'com.google.android.libraries.places:places:2.4.0'
 
 }

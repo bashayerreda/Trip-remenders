@@ -1,15 +1,24 @@
 package com.example.tripremenders;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,6 +31,7 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.tripremenders.broadcast.AlertReceiver;
 import com.example.tripremenders.models.NoteModel;
 import com.example.tripremenders.models.TripViewModel;
 import com.google.android.gms.maps.model.LatLng;
@@ -57,6 +67,17 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
     private ArrayList<Integer> tripIdArrayList;
     private ArrayList<String> noteArrayList;
 
+    Handler handler = new Handler(Looper.myLooper()) {
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            Bundle bundle = msg.getData();
+            long[] ids = bundle.getLongArray("ids");
+            model.setId((int) ids[0]);
+            startAlarm(calendar, model);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,14 +104,14 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
 
-        if(editTrip != null) {
+        if (editTrip != null) {
             save.setText(getString(R.string.edit));
             tripName.setText(editTrip.getName());
             startPoint.setText(editTrip.getStartPoint());
             endPoint.setText(editTrip.getEndPoint());
             time.setText(editTrip.getTime());
             date.setText(editTrip.getDate());
-            if(editTrip.getTripType().equals("One Direction")) {
+            if (editTrip.getTripType().equals("One Direction")) {
                 spinner.setSelection(0);
             } else {
                 spinner.setSelection(1);
@@ -149,7 +170,7 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
                 model.setEndPoint(endPoint.getText().toString());
 
                 Toast.makeText(this, model.getTripType(), Toast.LENGTH_SHORT).show();
-                Toast.makeText(this,  String.valueOf(calendar.getTimeInMillis()), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, String.valueOf(calendar.getTimeInMillis()), Toast.LENGTH_LONG).show();
 
                 Log.i("TAG", "onCreate: " + calendar.getTimeInMillis());
 
@@ -161,15 +182,14 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
 
                 tripViewModel = ViewModelProviders.of(this).get(TripViewModel.class);
 
-                if(editTrip != null) {
+                if (editTrip != null) {
                     tripViewModel.update(model);
                 } else {
-                    tripViewModel.insert(model);
+
+                    tripViewModel.insert(model,handler);
                 }
 
                 finish();
-
-
             }
         });
 
@@ -242,6 +262,25 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
         String s = DateFormat.getDateInstance().format(calendar.getTime());
         model.setDate(s);
         date.setText(s);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void startAlarm(Calendar calendar, TripModel trip) {
+
+        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(this, AlertReceiver.class);
+
+        intent.putExtra("trip", trip);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, trip.getId(), intent, 0);
+
+        /*if (calendar.before(Calendar.getInstance())){
+            calendar.add(Calendar.DATE,1);
+        }*/
+
+        manager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+
     }
 
 

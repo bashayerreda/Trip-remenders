@@ -87,7 +87,7 @@ public class HomeActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        tripViewModel.insert(dataSnapshot.getValue(TripModel.class));
+                        tripViewModel.insert(dataSnapshot.getValue(TripModel.class),null);
                     }
                     databaseReferenceNotes.addListenerForSingleValueEvent(new ValueEventListener() {
 

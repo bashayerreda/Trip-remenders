@@ -1,10 +1,14 @@
 package com.example.tripremenders.models;
 
 import android.app.Application;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+
 
 public class TripRepository {
 
@@ -14,7 +18,7 @@ public class TripRepository {
     private LiveData<List<TripModel>> pastTrips;
 
     TripRepository(Application application) {
-     TripDatabase tripDatabase = TripDatabase.getDatabase(application);
+        TripDatabase tripDatabase = TripDatabase.getDatabase(application);
         tripDao = tripDatabase.tripDao();
 
     }
@@ -36,20 +40,20 @@ public class TripRepository {
         return pastTrips;
     }
 
-    public void update (TripModel tripModel) {
-        new InsertThread(tripDao, tripModel).start();
+    public void update(TripModel tripModel) {
+        new UpdateThread(tripDao, tripModel).start();
     }
 
-    public void insert (TripModel tripModel) {
-        new InsertThread(tripDao, tripModel).start();
+    public void insert(TripModel tripModel ,Handler handler) {
+        new InsertThread(tripDao, tripModel,handler).start();
         //new insertAsyncTask(tripDao).execute(tripModel);
     }
 
-    public void delete (TripModel tripModel) {
+    public void delete(TripModel tripModel) {
         new DeleteTripThread(tripDao, tripModel).start();
     }
 
-    public  void deleteAll () {
+    public void deleteAll() {
         new DeleteAllTripsThread(tripDao).start();
     }
 
@@ -72,22 +76,33 @@ public class TripRepository {
     }
 
     private class InsertThread extends Thread {
-
+        Handler handler;
+        //GetTripIdFromRoom idFromRoom;
         private TripDao tripDao;
         private TripModel trip;
 
-        InsertThread(TripDao tripDao, TripModel trip) {
+        InsertThread(TripDao tripDao, TripModel trip, Handler handler /*GetTripIdFromRoom idFromRoom*/) {
             super();
             this.tripDao = tripDao;
             this.trip = trip;
+            this.handler = handler;
+            //this.idFromRoom = idFromRoom;
         }
 
         @Override
         public void run() {
-            tripDao.insert(trip);
+            long[] ids = tripDao.insert(trip) ;
+            if (handler != null) {
+                Bundle bundle = new Bundle();
+                bundle.putLongArray("ids", ids);
+                Message message = new Message();
+                message.setData(bundle);
+                handler.sendMessage(message);
+            }
+
+
         }
     }
-
 
 
     private static class DeleteAllTripsThread extends Thread {

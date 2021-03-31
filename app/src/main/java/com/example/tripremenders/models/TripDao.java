@@ -26,7 +26,7 @@ public interface TripDao  {
     void update(TripModel tripModel);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(TripModel... tripModels);
+    long[] insert(TripModel... tripModels);
 
     @Delete
     void delete(TripModel tripModel);
