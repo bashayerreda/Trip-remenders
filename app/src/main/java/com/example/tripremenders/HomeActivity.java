@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -18,7 +17,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
-
 import com.example.tripremenders.models.NoteModel;
 import com.example.tripremenders.models.NoteViewModel;
 import com.example.tripremenders.models.TripModel;
@@ -32,7 +30,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeActivity extends AppCompatActivity {
@@ -44,23 +41,6 @@ public class HomeActivity extends AppCompatActivity {
     ViewPager viewPager;
     TabLayout tabLayout;
     Toolbar toolbar;
-      FirebaseAuth firebaseAuth;
-      FirebaseUser firebaseUser;
-
-
-    BroadcastReceiver bgshowBroacast = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String extra = intent.getStringExtra("BROADCAST");
-            if (extra != null) {
-                if (extra.equalsIgnoreCase("finishBgShowActivity")) {
-
-                    finish();
-                    Log.i("TAG", "onReceive: Bg_show_BroadCast receive from bg_send class ");
-                }
-            }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,8 +156,6 @@ public class HomeActivity extends AppCompatActivity {
         backPressedTime = System.currentTimeMillis();
     }
 
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         requestCode &= 0xffff;
@@ -187,17 +165,5 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        LocalBroadcastManager.getInstance(HomeActivity.this).registerReceiver(bgshowBroacast, new IntentFilter("BG_SHOW_BROADCAST"));
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        LocalBroadcastManager.getInstance(HomeActivity.this).unregisterReceiver(bgshowBroacast);
     }
 }

@@ -17,6 +17,7 @@ import androidx.core.app.NotificationCompat;
 import com.example.tripremenders.DialogMessageActivity;
 import com.example.tripremenders.R;
 import com.example.tripremenders.broadcast.NotificationReceiver;
+import com.example.tripremenders.models.TripModel;
 
 public class NotificationHelper extends ContextWrapper {
 
@@ -53,21 +54,24 @@ public class NotificationHelper extends ContextWrapper {
         return manager;
     }
 
-    public NotificationCompat.Builder getChannel1Notification(String title, String message, Context context) {
+    public NotificationCompat.Builder getChannel1Notification(TripModel trip, String message, Context context) {
         //for click on Notification
+        // id >>
         Intent intent = new Intent(context, DialogMessageActivity.class);
-        intent.putExtra("G2", title);
+        intent.putExtra("tripId", trip.getId());
+        intent.putExtra("sound", false);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
+        //action off add button
         Intent broadcastIntent = new Intent(context, NotificationReceiver.class);
-        broadcastIntent.putExtra("?", message);
+        broadcastIntent.putExtra("title", trip.getName());
         PendingIntent action = PendingIntent.getBroadcast(context, 0, broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channel1ID)
-                .setContentTitle(title)
+                .setContentTitle(trip.getName())
                 .setContentText(message)
                 .setColor(getResources().getColor(R.color.primary))
                 .setSmallIcon(R.drawable.ic_note_add)

@@ -9,9 +9,8 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // TODO: This method is called when the BroadcastReceiver is receiving
-        // an Intent broadcast. for the button action.
-        String m = intent.getStringExtra("?");
+
+        String m = intent.getStringExtra("title");
         Toast.makeText(context, "toast", Toast.LENGTH_SHORT).show();
     }
 }

@@ -6,10 +6,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 
 import com.example.tripremenders.models.TripModel;
 import com.example.tripremenders.models.TripViewModel;
@@ -47,8 +45,8 @@ public class DialogMessageActivity extends AppCompatActivity {
 
                     Log.i("TAG", "onCreate: " + tripId);
 
-                    TimeAlertCustomDialog noteCustomDialog = new TimeAlertCustomDialog(tripModel.getName());
-                    noteCustomDialog.show(getSupportFragmentManager(), "DialogTest");
+                    TimeAlertCustomDialog timeAlertCustomDialog = new TimeAlertCustomDialog(tripModel,getIntent().getBooleanExtra("sound",true));
+                    timeAlertCustomDialog.show(getSupportFragmentManager(), "DialogTest");
                 }
             });
         }

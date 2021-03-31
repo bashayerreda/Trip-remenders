@@ -70,19 +70,6 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
     private ArrayList<Integer> tripIdArrayList;
     private ArrayList<String> noteArrayList;
 
-    BroadcastReceiver bgshowBroacast = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String extra = intent.getStringExtra("BROADCAST");
-            if (extra != null) {
-                if (extra.equalsIgnoreCase("finishBgShowActivity")) {
-
-                    finish();
-                    Log.i("TAG", "onReceive: Bg_show_BroadCast receive from bg_send class ");
-                }
-            }
-        }
-    };
 
     Handler handler = new Handler(Looper.myLooper()) {
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -216,7 +203,7 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
     @Override // google API and list of notes
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Toast.makeText(this, resultCode + "", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, resultCode + "", Toast.LENGTH_SHORT).show();
         if (requestCode == 1 && resultCode == RESULT_OK) {
             Place place = Autocomplete.getPlaceFromIntent(data);
             startPoint.setText(place.getAddress());
@@ -257,11 +244,12 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         calendar.set(Calendar.MINUTE, minute);
-        String s = DateFormat.getTimeInstance().format(calendar.getTime());
+        calendar.set(Calendar.SECOND, 0);
+        String s = DateFormat.getTimeInstance(DateFormat.SHORT).format(calendar.getTime());
 
         model.setTime(s);
         time.setText(s);
-        Toast.makeText(this, hourOfDay + "", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, hourOfDay + "", Toast.LENGTH_SHORT).show();
     }
 
     @Override // datePicker
@@ -293,18 +281,5 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
         manager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
 
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        LocalBroadcastManager.getInstance(AddTripActivity.this).registerReceiver(bgshowBroacast, new IntentFilter("BG_SHOW_BROADCAST"));
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        LocalBroadcastManager.getInstance(AddTripActivity.this).unregisterReceiver(bgshowBroacast);
-    }
-
 
 }

@@ -16,6 +16,7 @@ public class AlertReceiver extends BroadcastReceiver {
 
         Intent startIntent = new Intent(context, DialogMessageActivity.class);
         startIntent.putExtra("tripId", intent.getIntExtra("tripId", 0));
+        startIntent.putExtra("sound", intent.getBooleanExtra("sound", true));
         startIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(startIntent);
 

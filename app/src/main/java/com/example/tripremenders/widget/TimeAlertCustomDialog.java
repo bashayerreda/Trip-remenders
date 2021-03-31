@@ -15,20 +15,22 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.core.app.NotificationCompat;
 
 import com.example.tripremenders.R;
+import com.example.tripremenders.models.TripModel;
 
 public class TimeAlertCustomDialog extends AppCompatDialogFragment {
 
     MediaPlayer player;
-    String str;
+    TripModel trip;
+    boolean sound;
     NotificationHelper helper;
     TextView tripName;
     Button startButton;
     Button laterButton;
     Button cancelButton;
 
-    public TimeAlertCustomDialog(String s) {
-        this.str = s;
-        Log.i("TAG", "TimeAlertCustomDialog: == "+s);
+    public TimeAlertCustomDialog(TripModel trip, boolean sound) {
+        this.trip = trip;
+        this.sound = sound;
         this.setCancelable(false);
     }
 
@@ -40,7 +42,10 @@ public class TimeAlertCustomDialog extends AppCompatDialogFragment {
         View view = inflater.inflate(R.layout.aleart_time_fire, null);
 
         builder.setView(view);
-        play(view);
+
+        if (sound){
+            play(view);
+        }
         tripName = view.findViewById(R.id.trip_name);
         startButton = view.findViewById(R.id.start);
         laterButton = view.findViewById(R.id.later);
@@ -56,7 +61,7 @@ public class TimeAlertCustomDialog extends AppCompatDialogFragment {
             Toast.makeText(getContext(), "laterButton", Toast.LENGTH_SHORT).show();
             stop(view);
             helper = new NotificationHelper(getActivity());
-            sendOnChannel1(str,"");
+            sendOnChannel1();
             getActivity().finish();
         });
         cancelButton.setOnClickListener(v -> {
@@ -66,13 +71,13 @@ public class TimeAlertCustomDialog extends AppCompatDialogFragment {
             getActivity().finish();
         });
 
-        tripName.setText(str);
+        tripName.setText(trip.getName());
         return builder.create();
     }
 
     public void play(View view) {
-        if ( player == null){
-            player = MediaPlayer.create(getActivity(),R.raw.alarm_clock);
+        if (player == null) {
+            player = MediaPlayer.create(getActivity(), R.raw.alarm_clock);
             player.setOnCompletionListener(mp -> {
                 player.start();
             });
@@ -81,15 +86,16 @@ public class TimeAlertCustomDialog extends AppCompatDialogFragment {
     }
 
     public void stop(View view) {
-        if (player !=null){
+        if (player != null) {
             player.release();
             player = null;
         }
     }
 
     // Notification
-    public void sendOnChannel1(String title, String message) {
-        NotificationCompat.Builder builder = helper.getChannel1Notification(title, message, getContext());
+    public void sendOnChannel1() {
+        NotificationCompat.Builder builder = helper.getChannel1Notification(trip,
+                "Click here to start your trip", getContext());
         helper.getManger().notify(1, builder.build());
     }
 
