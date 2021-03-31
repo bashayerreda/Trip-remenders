@@ -1,13 +1,21 @@
 package com.example.tripremenders;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.example.tripremenders.models.TripModel;
+import com.example.tripremenders.models.TripViewModel;
 import com.example.tripremenders.widget.TimeAlertCustomDialog;
+
+import java.util.List;
 
 public class DialogMessageActivity extends AppCompatActivity {
 //    MediaPlayer player;
@@ -18,11 +26,32 @@ public class DialogMessageActivity extends AppCompatActivity {
         //setContentView(R.layout.activity_dialog_message);
 
 
-        String s = getIntent().getStringExtra("G2");
-        Log.i("TAG", "onCreate: " + s);
+        int tripId = getIntent().getIntExtra("tripId", 0);
 
-        TimeAlertCustomDialog noteCustomDialog = new TimeAlertCustomDialog(s);
-        noteCustomDialog.show(getSupportFragmentManager(), "DialogTest");
+        Log.i("TAG", "onCreate: DialogMessageActivity 1");
+        if(tripId != 0) {
+            TripViewModel tripViewModel =
+                    ViewModelProviders.of(this).get(TripViewModel.class);
+            Log.i("TAG", "onCreate: DialogMessageActivity 2");
+
+            LiveData<List<TripModel>> tripById = tripViewModel.getTripById(tripId);
+            Log.i("TAG", "onCreate: DialogMessageActivity 3");
+
+            tripById.observe(this, new Observer<List<TripModel>>() {
+
+                @Override
+                public void onChanged(@Nullable final List<TripModel> tripModels) {
+                    Log.i("TAG", "onCreate: DialogMessageActivity 4");
+
+                    TripModel tripModel = tripModels.get(0);
+
+                    Log.i("TAG", "onCreate: " + tripId);
+
+                    TimeAlertCustomDialog noteCustomDialog = new TimeAlertCustomDialog(tripModel.getName());
+                    noteCustomDialog.show(getSupportFragmentManager(), "DialogTest");
+                }
+            });
+        }
 
     }
 

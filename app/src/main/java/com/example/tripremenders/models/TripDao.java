@@ -22,6 +22,9 @@ public interface TripDao  {
     @Query("SELECT * FROM trips where status != 0 order by timestamp asc")
     LiveData<List<TripModel>> getAllPastTrips();
 
+    @Query("SELECT * FROM trips where id = :id")
+    LiveData<List<TripModel>> getTripById(int id);
+
     @Update
     void update(TripModel tripModel);
 

@@ -19,18 +19,19 @@ public class TripViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<TripModel>> getAllTrips() {
-        LiveData<List<TripModel>> allTrips = tripRepository.getAllTrips();
-        return allTrips;
+        return tripRepository.getAllTrips();
     }
 
     public LiveData<List<TripModel>> getAllUpcomingTrips() {
-        LiveData<List<TripModel>> upcomingTrips = tripRepository.getAllUpcomingTrips();
-        return upcomingTrips;
+        return tripRepository.getAllUpcomingTrips();
     }
 
     public LiveData<List<TripModel>> getAllPastTrips() {
-        LiveData<List<TripModel>> pastTrips = tripRepository.getAllPastTrips();
-        return pastTrips;
+        return tripRepository.getAllPastTrips();
+    }
+
+    public LiveData<List<TripModel>> getTripById(int id) {
+        return tripRepository.getTripById(id);
     }
 
     public void update(TripModel trip) {

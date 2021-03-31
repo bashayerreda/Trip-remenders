@@ -12,10 +12,7 @@ import java.util.List;
 
 public class TripRepository {
 
-    private TripDao tripDao;
-    private LiveData<List<TripModel>> allTrips;
-    private LiveData<List<TripModel>> upComingTrips;
-    private LiveData<List<TripModel>> pastTrips;
+    private final TripDao tripDao;
 
     TripRepository(Application application) {
         TripDatabase tripDatabase = TripDatabase.getDatabase(application);
@@ -24,28 +21,27 @@ public class TripRepository {
     }
 
     public LiveData<List<TripModel>> getAllTrips() {
-        allTrips = tripDao.getAllTrips();
-        return allTrips;
+        return tripDao.getAllTrips();
     }
 
     public LiveData<List<TripModel>> getAllUpcomingTrips() {
-        upComingTrips = tripDao.getAllUpComingTrips();
-        return upComingTrips;
+        return tripDao.getAllUpComingTrips();
     }
 
     public LiveData<List<TripModel>> getAllPastTrips() {
+        return tripDao.getAllPastTrips();
+    }
 
-        pastTrips = tripDao.getAllPastTrips();
-
-        return pastTrips;
+    public LiveData<List<TripModel>> getTripById(int id) {
+        return tripDao.getTripById(id);
     }
 
     public void update(TripModel tripModel) {
         new UpdateThread(tripDao, tripModel).start();
     }
 
-    public void insert(TripModel tripModel ,Handler handler) {
-        new InsertThread(tripDao, tripModel,handler).start();
+    public void insert(TripModel tripModel, Handler handler) {
+        new InsertThread(tripDao, tripModel, handler).start();
         //new insertAsyncTask(tripDao).execute(tripModel);
     }
 
@@ -60,8 +56,8 @@ public class TripRepository {
 
     private class UpdateThread extends Thread {
 
-        private TripDao tripDao;
-        private TripModel trip;
+        private final TripDao tripDao;
+        private final TripModel trip;
 
         UpdateThread(TripDao tripDao, TripModel trip) {
             super();
@@ -76,12 +72,11 @@ public class TripRepository {
     }
 
     private class InsertThread extends Thread {
-        Handler handler;
-        //GetTripIdFromRoom idFromRoom;
-        private TripDao tripDao;
-        private TripModel trip;
+        private final Handler handler;
+        private final TripDao tripDao;
+        private final TripModel trip;
 
-        InsertThread(TripDao tripDao, TripModel trip, Handler handler /*GetTripIdFromRoom idFromRoom*/) {
+        InsertThread(TripDao tripDao, TripModel trip, Handler handler) {
             super();
             this.tripDao = tripDao;
             this.trip = trip;
@@ -91,7 +86,7 @@ public class TripRepository {
 
         @Override
         public void run() {
-            long[] ids = tripDao.insert(trip) ;
+            long[] ids = tripDao.insert(trip);
             if (handler != null) {
                 Bundle bundle = new Bundle();
                 bundle.putLongArray("ids", ids);
@@ -107,7 +102,7 @@ public class TripRepository {
 
     private static class DeleteAllTripsThread extends Thread {
 
-        TripDao tripDao;
+        private final TripDao tripDao;
 
         public DeleteAllTripsThread(TripDao tripDao) {
 
@@ -122,8 +117,8 @@ public class TripRepository {
 
     private static class DeleteTripThread extends Thread {
 
-        TripDao tripDao;
-        TripModel trip;
+        private final TripDao tripDao;
+        private final TripModel trip;
 
         public DeleteTripThread(TripDao tripDao, TripModel trip) {
 

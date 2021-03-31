@@ -1,7 +1,11 @@
 package com.example.tripremenders;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -12,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.tripremenders.models.NoteModel;
@@ -41,6 +46,22 @@ public class HomeActivity extends AppCompatActivity {
     Toolbar toolbar;
       FirebaseAuth firebaseAuth;
       FirebaseUser firebaseUser;
+
+
+    BroadcastReceiver bgshowBroacast = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String extra = intent.getStringExtra("BROADCAST");
+            if (extra != null) {
+                if (extra.equalsIgnoreCase("finishBgShowActivity")) {
+
+                    finish();
+                    Log.i("TAG", "onReceive: Bg_show_BroadCast receive from bg_send class ");
+                }
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -166,5 +187,17 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(HomeActivity.this).registerReceiver(bgshowBroacast, new IntentFilter("BG_SHOW_BROADCAST"));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(HomeActivity.this).unregisterReceiver(bgshowBroacast);
     }
 }

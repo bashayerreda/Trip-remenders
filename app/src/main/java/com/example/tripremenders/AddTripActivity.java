@@ -6,14 +6,17 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -67,14 +70,28 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
     private ArrayList<Integer> tripIdArrayList;
     private ArrayList<String> noteArrayList;
 
+    BroadcastReceiver bgshowBroacast = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String extra = intent.getStringExtra("BROADCAST");
+            if (extra != null) {
+                if (extra.equalsIgnoreCase("finishBgShowActivity")) {
+
+                    finish();
+                    Log.i("TAG", "onReceive: Bg_show_BroadCast receive from bg_send class ");
+                }
+            }
+        }
+    };
+
     Handler handler = new Handler(Looper.myLooper()) {
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         public void handleMessage(@NonNull Message msg) {
             Bundle bundle = msg.getData();
             long[] ids = bundle.getLongArray("ids");
-            model.setId((int) ids[0]);
-            startAlarm(calendar, model);
+            int tripId = (int) ids[0];
+            startAlarm(calendar, tripId);
         }
     };
 
@@ -196,12 +213,6 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-//        bubblesManager.recycle();
-    }
-
     @Override // google API and list of notes
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -265,15 +276,15 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void startAlarm(Calendar calendar, TripModel trip) {
+    private void startAlarm(Calendar calendar, int tripId) {
 
         AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(this, AlertReceiver.class);
 
-        intent.putExtra("trip", trip);
+        intent.putExtra("tripId", tripId);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, trip.getId(), intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, tripId, intent, 0);
 
         /*if (calendar.before(Calendar.getInstance())){
             calendar.add(Calendar.DATE,1);
@@ -281,6 +292,18 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
 
         manager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(AddTripActivity.this).registerReceiver(bgshowBroacast, new IntentFilter("BG_SHOW_BROADCAST"));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(AddTripActivity.this).unregisterReceiver(bgshowBroacast);
     }
 
 

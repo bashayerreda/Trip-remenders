@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.example.tripremenders.DialogMessageActivity;
+import com.example.tripremenders.models.TripModel;
 
 
 public class AlertReceiver extends BroadcastReceiver {
@@ -13,11 +14,10 @@ public class AlertReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        String s = intent.getStringExtra("name");
-        Intent g2 = new Intent(context, DialogMessageActivity.class);
-        g2.putExtra("G2", s);
-//        g2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(g2);
+        Intent startIntent = new Intent(context, DialogMessageActivity.class);
+        startIntent.putExtra("tripId", intent.getIntExtra("tripId", 0));
+        startIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(startIntent);
 
     }
 }

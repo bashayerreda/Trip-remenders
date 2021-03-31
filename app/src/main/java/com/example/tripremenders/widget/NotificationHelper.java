@@ -14,16 +14,16 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-import com.example.tripremenders.HomeActivity;
+import com.example.tripremenders.DialogMessageActivity;
 import com.example.tripremenders.R;
 import com.example.tripremenders.broadcast.NotificationReceiver;
 
 public class NotificationHelper extends ContextWrapper {
 
-    public static final String channel1ID = "channel1ID";
-    public static final String channel1Name = "channel1Name";
-
     private NotificationManager manager;
+
+    public final String channel1ID = "channel1ID";
+    public final String channel1Name = "channel1Name";
 
     public NotificationHelper(Context base) {
         super(base);
@@ -35,7 +35,8 @@ public class NotificationHelper extends ContextWrapper {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void createChannels() {
-        NotificationChannel channel = new NotificationChannel(channel1ID, channel1Name, NotificationManager.IMPORTANCE_DEFAULT);
+        NotificationChannel channel = new NotificationChannel(channel1ID,
+                channel1Name, NotificationManager.IMPORTANCE_DEFAULT);
         channel.enableLights(true);
         channel.enableVibration(true);
         channel.setLightColor(R.color.primary);
@@ -54,8 +55,8 @@ public class NotificationHelper extends ContextWrapper {
 
     public NotificationCompat.Builder getChannel1Notification(String title, String message, Context context) {
         //for click on Notification
-        Intent intent = new Intent(context, HomeActivity.class);
-        //intent.putExtra("email", m.get("email"));
+        Intent intent = new Intent(context, DialogMessageActivity.class);
+        intent.putExtra("G2", title);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
@@ -65,7 +66,7 @@ public class NotificationHelper extends ContextWrapper {
         PendingIntent action = PendingIntent.getBroadcast(context, 0, broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(),channel1ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channel1ID)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setColor(getResources().getColor(R.color.primary))

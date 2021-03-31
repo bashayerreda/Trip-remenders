@@ -35,9 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SettingsFragment  extends Fragment {
-    private TripViewModel tripViewModel;
-    PastTripAdapter pastTripAdapter;
-    ArrayList<TripModel>trips;
+
     public static final String SEND_TRIPS_EXTRA = "trips Data";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
