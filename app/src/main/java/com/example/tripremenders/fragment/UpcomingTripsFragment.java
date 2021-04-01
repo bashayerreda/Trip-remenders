@@ -3,7 +3,9 @@ package com.example.tripremenders.fragment;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,7 @@ import com.example.tripremenders.adapters.UpcomingTripAdapter;
 import com.example.tripremenders.models.NoteModel;
 import com.example.tripremenders.models.TripModel;
 import com.example.tripremenders.models.TripViewModel;
+import com.example.tripremenders.service.WidgetService;
 import com.example.tripremenders.widget.NoteListCustomDialog;
 import com.google.android.gms.maps.model.LatLng;
 import com.txusballesteros.bubbles.BubbleLayout;
@@ -38,21 +41,14 @@ public class UpcomingTripsFragment extends Fragment {
     public UpcomingTripAdapter tripAdapter;
     RecyclerView recyclerView;
 
-    private BubblesManager bubblesManager;
-    private BubblesManager bubblesTrashManager;
-
     public UpcomingTripsFragment() {
         // Required empty public constructor
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         tripViewModel = ViewModelProviders.of(this).get(TripViewModel.class);
-
-
     }
 
     @Override
@@ -65,18 +61,13 @@ public class UpcomingTripsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         RecyclerView recyclerView = getActivity().findViewById(R.id.upcoming_trip_recyclerView);
-
         recyclerView.setLayoutManager(linearLayoutManager);
-
         UpcomingTripAdapter upcomingTripAdapter =
                 new UpcomingTripAdapter(getContext(), trips, getActivity().getMenuInflater(),
                         recyclerView);
-
         recyclerView.setAdapter(upcomingTripAdapter);
         upcomingTripAdapter.setStartTrip = new UpcomingTripAdapter.StartTrip() {
             @Override
@@ -94,14 +85,13 @@ public class UpcomingTripsFragment extends Fragment {
                 upcomingTripAdapter.setTrips((ArrayList<TripModel>) tripModels);
             }
         });
-
     }
 
     private void DisplayTrack(String endPoint) {
         //if device dosnt have mape installed then redirect it to play store
         //https://www.google.com/maps/search/?api=1&query=47.5951518,-122.3316393
 
-        show();
+        showBubble();
 
         try {
             //when google map installed
@@ -116,7 +106,6 @@ public class UpcomingTripsFragment extends Fragment {
             startActivity(intent);
 
 
-
         } catch (ActivityNotFoundException e) {
             //when google map is not initialize
             Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.apps.maps");
@@ -126,35 +115,19 @@ public class UpcomingTripsFragment extends Fragment {
 
             startActivity(intent);
         }
-
-
     }
 
-    private void show() {
-        bubblesManager = new BubblesManager.Builder(getActivity())
-                .build();
-        bubblesManager.initialize();
+    private void showBubble() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(getContext())) {
 
-        bubblesTrashManager = new BubblesManager.Builder(getActivity())
-                .setTrashLayout(R.layout.trash_item)
-                .build();
-        bubblesTrashManager.initialize();
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getActivity().getPackageName()));
+            startActivityForResult(intent, 106);
+        } else {
+            Intent floatingService = new Intent(getActivity(), WidgetService.class);
+            floatingService.putExtra("tripUid", 50);
 
-        BubbleLayout bubbleView = (BubbleLayout) LayoutInflater
-                .from(getActivity()).inflate(R.layout.floating_widget_item, null);
-
-        bubblesManager.addBubble(bubbleView, 60, 20);
-
-        bubbleView.setOnBubbleClickListener(bubble -> {
-            ArrayList<NoteModel> awd = new ArrayList<>();
-            NoteModel ddd = new NoteModel();
-            ddd.setNote("awdadawdad");
-            awd.add(ddd);
-            awd.add(ddd);
-            awd.add(ddd);
-            NoteListCustomDialog noteListCustomDialog = new NoteListCustomDialog(awd);
-            noteListCustomDialog.show(getFragmentManager(), "DialogTest");
-        });
+            getActivity().startService(floatingService);
+        }
     }
-
 }

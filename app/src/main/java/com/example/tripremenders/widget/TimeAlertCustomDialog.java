@@ -5,7 +5,9 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +21,10 @@ import androidx.core.app.NotificationCompat;
 
 import com.example.tripremenders.R;
 import com.example.tripremenders.models.TripModel;
+import com.example.tripremenders.service.WidgetService;
 
 public class TimeAlertCustomDialog extends AppCompatDialogFragment {
-
+    private int count = 0;
     MediaPlayer player;
     TripModel trip;
     boolean sound;
@@ -46,7 +49,7 @@ public class TimeAlertCustomDialog extends AppCompatDialogFragment {
 
         builder.setView(view);
 
-        if (sound){
+        if (sound) {
             play(view);
         }
         tripName = view.findViewById(R.id.trip_name);
@@ -56,29 +59,8 @@ public class TimeAlertCustomDialog extends AppCompatDialogFragment {
         startButton.setOnClickListener(v -> {
             this.dismiss();
             stop(view);
-            try {
-                //when google map installed
-                Uri uri = Uri.parse("geo:0,0?q=" + trip.getEndPointLat() + "," + trip.getEndPointLat());
-            /*Uri uri = Uri.parse("https://www.google.com/maps/search/?api&query=" +
-                    latLng.longitude + "," + latLng.latitude); */
-                //Action view with uri
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                intent.setPackage("com.google.android.apps.maps");
-                //set flag
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-
-
-            } catch (ActivityNotFoundException e) {
-                //when google map is not initialize
-                Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.apps.maps");
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                //set flag
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                startActivity(intent);
-            }
             getActivity().finish();
+            DisplayTrack(trip.getEndPoint());
         });
         laterButton.setOnClickListener(v -> {
             this.dismiss();
@@ -103,10 +85,15 @@ public class TimeAlertCustomDialog extends AppCompatDialogFragment {
         if (player == null) {
             player = MediaPlayer.create(getActivity(), R.raw.alarm_clock);
             player.setOnCompletionListener(mp -> {
-                player.start();
+                if (count < 2) {
+                    player.start();
+                } else {
+                    player.stop();
+                }
             });
         }
         player.start();
+        count++;
     }
 
     public void stop(View view) {
@@ -116,11 +103,54 @@ public class TimeAlertCustomDialog extends AppCompatDialogFragment {
         }
     }
 
+    private void DisplayTrack(String endPoint) {
+        //if device dosnt have mape installed then redirect it to play store
+        //https://www.google.com/maps/search/?api=1&query=47.5951518,-122.3316393
+
+        showBubble();
+
+        try {
+            //when google map installed
+            Uri uri = Uri.parse("https://www.google.co.in/maps/dir/" + "/" + endPoint);
+            /*Uri uri = Uri.parse("https://www.google.com/maps/search/?api&query=" +
+                    latLng.longitude + "," + latLng.latitude); */
+            //Action view with uri
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            intent.setPackage("com.google.android.apps.maps");
+            //set flag
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+
+
+        } catch (ActivityNotFoundException e) {
+            //when google map is not initialize
+            Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.apps.maps");
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            //set flag
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            startActivity(intent);
+        }
+    }
+
+    private void showBubble() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(getContext())) {
+
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getActivity().getPackageName()));
+            startActivityForResult(intent, 106);
+        } else {
+            Intent floatingService = new Intent(getActivity(), WidgetService.class);
+            floatingService.putExtra("tripUid", 50);
+
+            getActivity().startService(floatingService);
+        }
+    }
+
     // Notification
     public void sendOnChannel1() {
         NotificationCompat.Builder builder = helper.getChannel1Notification(trip,
                 "Click here to start your trip", getContext());
         helper.getManger().notify(1, builder.build());
     }
-
 }

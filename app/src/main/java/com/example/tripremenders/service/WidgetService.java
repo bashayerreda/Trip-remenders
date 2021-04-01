@@ -1,92 +1,200 @@
 package com.example.tripremenders.service;
 
+
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.view.Gravity;
+import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import com.example.tripremenders.R;
+import com.example.tripremenders.adapters.NoteAdapter;
+import com.example.tripremenders.models.NoteModel;
+import com.example.tripremenders.models.NoteViewModel;
 
-public class WidgetService extends Service {
+import java.util.ArrayList;
 
-    int LAYOUT_FLAG;
-    View mFloatingView;
-    WindowManager windowManager;
-    ImageView imageCloser;
-    ImageView fW;
-    float height, width;
 
-    @Nullable
+public class WidgetService extends Service implements View.OnClickListener {
+
+
+    private static final String TAG = "MYTAG";
+    private WindowManager mWindowManager;
+    private View mFloatingView;
+    private View collapsedView;
+    private View expandedView;
+    RecyclerView recyclerView;
+    NoteAdapter adapter;
+    ArrayList<NoteModel> notes;
+    private NoteViewModel noteViewModel;
+    Handler noteHandler;
+    long tripUid;
+
+    public WidgetService() {
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        //get uid from reminderservice
+        if (intent != null && intent.hasExtra("tripUid")) {
+            Log.i(TAG, "uid from start: " + tripUid);
+            tripUid = intent.getLongExtra("tripUid", 60);
+//            new Thread() {
+//                @Override
+//                public void run() {
+//                    db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "DataBase-name").build();
+//                    TripNoteDao tripNoteDao = db.tripNoteDao();
+//                    notes.addAll(tripNoteDao.getAllNotes(tripUid).get(0).noteList);
+//                    noteHandler.sendEmptyMessage(1);
+//                }
+//            }.start();
+        }
+        return super.onStartCommand(intent, flags, startId);
+    }
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        } else {
-            LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_PHONE;
-        }
-        // inflate widget layout
+    public void onCreate() {
+        super.onCreate();
+        //initialize notes list
+        notes = new ArrayList<>();
+        notes.add(new NoteModel("test"));
+        notes.add(new NoteModel("test"));
+        notes.add(new NoteModel("test"));
+        notes.add(new NoteModel("test"));
+        //getting the widget layout from xml using layout inflater
         mFloatingView = LayoutInflater.from(this).inflate(R.layout.floating_widget_item, null);
+        //setting the layout parameters
+         WindowManager.LayoutParams params ;
 
-        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                LAYOUT_FLAG,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                PixelFormat.TRANSLUCENT);
+        //getting windows services and adding the floating view to it
+        mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-        layoutParams.gravity = Gravity.TOP | Gravity.RIGHT;
-        layoutParams.x = 0;
-        layoutParams.y = 100;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
 
-        //Layout params for close button
-        WindowManager.LayoutParams imageParams = new WindowManager.LayoutParams(140,
-                140,
-                LAYOUT_FLAG,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                PixelFormat.TRANSLUCENT);
+              params = new WindowManager.LayoutParams(
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                    PixelFormat.TRANSLUCENT);
 
-        imageParams.gravity = Gravity.BOTTOM | Gravity.CENTER;
-        imageParams.y = 100;
+        } else {
+             params = new WindowManager.LayoutParams(
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                    PixelFormat.TRANSLUCENT);
+        }
 
-        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        imageCloser = new ImageView(this);
-        imageCloser.setImageResource(R.drawable.ic_cancel);
-        imageCloser.setVisibility(View.INVISIBLE);
-        windowManager.addView(imageCloser, imageParams);
-        windowManager.addView(mFloatingView, layoutParams);
-        mFloatingView.setVisibility(View.VISIBLE);
+        mWindowManager.addView(mFloatingView, params);
 
-//        fW =  mFloatingView.findViewById(R.id.imageFW);
-//        fW.setOnClickListener(v -> {
-//
-//        });
+        //getting the collapsed and expanded view from the floating view
+        collapsedView = mFloatingView.findViewById(R.id.layoutCollapsed);
+        expandedView = mFloatingView.findViewById(R.id.layoutExpanded);
+        recyclerView = expandedView.findViewById(R.id.floatingWidgetRecyclerView);
+        adapter = new NoteAdapter(WidgetService.this, notes);
+        recyclerView.setLayoutManager(new LinearLayoutManager(WidgetService.this));
+        recyclerView.setAdapter(adapter);
+        //adding click listener to close button and expanded view
+        mFloatingView.findViewById(R.id.buttonClose).setOnClickListener(this);
+        expandedView.setOnClickListener(this);
+        //check when switching between view s
+        collapsedView.setOnClickListener(v -> {
+            if (collapsedView.getVisibility() == View.VISIBLE && expandedView.getVisibility() == View.VISIBLE) {
+                collapsedView.setVisibility(View.VISIBLE);
+                expandedView.setVisibility(View.GONE);
+            } else {
+                switch (v.getId()) {
+                    case R.id.layoutCollapsed:
+                        Log.i(TAG, "collapsed ");
+                        //switching views
+                        collapsedView.setVisibility(View.VISIBLE);
+                        expandedView.setVisibility(View.VISIBLE);
+                        break;
+                }
+            }
+        });
 
-        // show & update
-//        Handler handler = new Handler() ;
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//            }
-//        });
 
-        return START_STICKY;
+        //adding an touchlistener to make drag movement of the floating widget
+        mFloatingView.findViewById(R.id.layoutCollapsed).setOnTouchListener(new View.OnTouchListener() {
+            private int initialX;
+            private int initialY;
+            private float initialTouchX;
+            private float initialTouchY;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        initialX = params.x;
+                        initialY = params.y;
+                        initialTouchX = event.getRawX();
+                        initialTouchY = event.getRawY();
+
+                        return false;
+
+                    case MotionEvent.ACTION_MOVE:
+                        //this code is helping the widget to move around the screen with fingers
+                        params.x = initialX + (int) (event.getRawX() - initialTouchX);
+                        params.y = initialY + (int) (event.getRawY() - initialTouchY);
+                        mWindowManager.updateViewLayout(mFloatingView, params);
+
+                        return false;
+                }
+                return false;
+            }
+        });
+
+
+        //to update recyclerview with notes
+        noteHandler = new Handler() {
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                super.handleMessage(msg);
+                adapter.notifyDataSetChanged();
+            }
+        };
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (mFloatingView != null) mWindowManager.removeView(mFloatingView);
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()) {
+            case R.id.layoutExpanded:
+                //switching views
+                collapsedView.setVisibility(View.VISIBLE);
+                expandedView.setVisibility(View.GONE);
+                break;
+
+            case R.id.buttonClose:
+                //closing the widget
+                stopSelf();
+                break;
+        }
     }
 }

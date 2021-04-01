@@ -2,14 +2,16 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/divider">
 
     <LinearLayout
         android:id="@+id/trip_lunch_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:background="@color/divider"
         android:orientation="vertical"
+        android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -25,15 +27,27 @@
                 android:orientation="vertical"
                 android:padding="8dp">
 
-                <TextView
-                    android:id="@+id/trip_name"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="gbfjkkggsjg;srjhfgjlsgfjgfjhfdsfgdsjggsjgsrjgsdfjsgjlsjgljsghshi''f;ljglkhfesl;hfeg'hafhladgvlhav;hogao"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/mapblue" />
+
+                    <TextView
+                        android:id="@+id/trip_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="gbfjkkggsjg;srjhfgjlsgfjgfjhfdsfgdsjggsjgsrjgsdfjsgjlsjgljsghshi''f;ljglkhfesl;hfeg'hafhladgvlhav;hogao"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -46,8 +60,10 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:layout_weight="1"
-                        android:background="@color/primary"
-                        android:text="@string/start" />
+                        android:background="@drawable/card_bt"
+                        android:text="@string/start"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
 
                     <Button
                         android:id="@+id/later"
@@ -55,7 +71,10 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:layout_weight="1"
-                        android:text="@string/later" />
+                        android:background="@drawable/card_bt"
+                        android:text="@string/later"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
 
                     <Button
                         android:id="@+id/cancel"
@@ -63,7 +82,10 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:layout_weight="1"
-                        android:text="@string/places_cancel" />
+                        android:background="@drawable/card_bt"
+                        android:text="@string/places_cancel"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
 
                 </LinearLayout>
             </LinearLayout>
