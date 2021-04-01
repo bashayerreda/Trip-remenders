@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical">
-
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
@@ -19,27 +18,14 @@
         android:textColor="#0277BD"
         android:textSize="38sp"
         android:textStyle="bold" />
-
-    <!--    <com.github.ybq.android.spinkit.SpinKitView -->
-    <!--        xmlns:app="http://schemas.android.com/apk/res-auto"-->
-    <!--        android:id="@+id/spin_kit"-->
-    <!--        style="@style/SpinKitView.Large.Circle"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginLeft="290dp"-->
-    <!--        android:visibility="gone"-->
-    <!--        app:SpinKit_Color="@color/colorAccent" />-->
-
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/title">
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_view"
                 android:layout_width="match_parent"
@@ -48,7 +34,6 @@
                 app:cardCornerRadius="15dp"
                 app:cardElevation="4dp"
                 app:contentPadding="18dp">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -67,7 +52,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/monadi"
-                            android:hint="@string/user_name"
+                            android:hint="@string/User_Name"
                             android:inputType="text" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -141,9 +126,7 @@
                 android:layout_marginTop="-30dp"
                 android:layout_marginRight="35dp"
                 android:elevation="10dp">
-
                 <Button
-
                     android:id="@+id/btn_sign_up"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -155,9 +138,7 @@
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     app:shapeAppearanceOverlay="@style/leaf" />
-
             </RelativeLayout>
-
             <TextView
                 android:id="@+id/text_or"
                 android:layout_width="wrap_content"
@@ -167,15 +148,13 @@
                 android:layout_marginTop="35dp"
                 android:fontFamily="@font/aniq"
                 android:text="@string/or"
-                android:textSize="13sp" />
-
+                android:textSize="25sp" />
             <LinearLayout
                 android:id="@+id/login_icons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/text_or"
                 android:paddingHorizontal="20dp">
-
                 <ImageView
                     android:id="@+id/facebook_login"
                     android:layout_width="0dp"
@@ -183,7 +162,6 @@
                     android:layout_weight="1"
                     android:background="?android:attr/selectableItemBackground"
                     android:src="@drawable/ic_facebook" />
-
                 <ImageView
                     android:id="@+id/gmail_login"
                     android:layout_width="0dp"
@@ -192,7 +170,6 @@
                     android:background="?android:attr/selectableItemBackground"
                     android:src="@drawable/ic_google" />
             </LinearLayout>
-
             <Button
                 android:id="@+id/btn_sign_in"
                 android:layout_width="match_parent"
@@ -208,7 +185,6 @@
                 android:textColor="#FFF"
                 android:textSize="17sp"
                 app:shapeAppearanceOverlay="@style/leaf" />
-
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>

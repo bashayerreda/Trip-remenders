@@ -55,6 +55,14 @@ import com.example.tripremenders.fragment.TimePickerFragment;
 import com.example.tripremenders.models.TripModel;
 
 public class AddTripActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
+
+//    private final String TAG_TRIP_NAME = "TAG_TRIP_NAME";
+//    private final String TAG_START_POINT = "TAG_START_POINT";
+//    private final String TAG_END_POINT = "TAG_END_POINT";
+//    private final String TAG_DATE = "TAG_DATE";
+//    private final String TAG_TIME = "TAG_TIME";
+//    private final String TAG_SPINNER = "TAG_SPINNER";
+
     private Spinner spinner;
     private ImageView trip_type_image, timePicker, datePicker;
     private EditText tripName, startPoint, endPoint;
@@ -65,7 +73,6 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
     private Calendar calendar;
 
     private TripViewModel tripViewModel;
-
 
 
     Handler handler = new Handler(Looper.myLooper()) {
@@ -192,7 +199,7 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
                     startAlarm(calendar, model.getId());
                 } else {
 
-                    tripViewModel.insert(model,handler);
+                    tripViewModel.insert(model, handler);
                 }
 
                 finish();
@@ -280,5 +287,17 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
         manager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
 
     }
+
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//
+//        outState.putString(TAG_TRIP_NAME, tripName.getText().toString());
+//        outState.putString(TAG_START_POINT, startPoint.getText().toString());
+//        outState.putString(TAG_END_POINT, endPoint.getText().toString());
+//        outState.putString(TAG_DATE,  date.getText().toString());
+//        outState.putString(TAG_TIME, time.getText().toString());
+//        outState.putString(TAG_SPINNER, spinner.getSelectedItem().toString());
+//    }
 
 }

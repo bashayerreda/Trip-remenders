@@ -5,7 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/divider">
-
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -13,25 +17,37 @@
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/user_name_settings"
+                android:layout_width="250dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="150dp"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:text="user name"
+                android:textColor="@color/primary_text"
+                android:textSize="20sp"/>
+
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="20dp"
+                android:id="@+id/user_logo"
+                android:layout_width="150dp"
+                android:layout_height="130dp"
+                android:src="@drawable/user_icon"
+                app:civ_border_color="#134563"
+             />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:padding="16dp"
-                    android:text="name"
-                    android:textColor="@color/primary_text"
-                    android:textSize="30sp" />
+
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
@@ -55,7 +71,7 @@
                     android:layout_width="75dp"
                     android:layout_height="75dp"
                     android:padding="16dp"
-                    android:src="@drawable/ic_backup" />
+                    android:src="@drawable/sync" />
 
                 <TextView
                     android:id="@+id/sync_button"
@@ -63,12 +79,46 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:padding="16dp"
-                    android:textStyle="bold"
-                    android:text="@string/sync"
+                    android:text="@string/Sync"
                     android:textColor="@color/primary_text"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
+        </androidx.cardview.widget.CardView>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:background="@drawable/line_item" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:padding="16dp"
+                    android:src="@drawable/setmap" />
+
+                <TextView
+                    android:id="@+id/map"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="@string/map"
+                    android:textColor="@color/primary_text"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <View
@@ -90,7 +140,7 @@
                     android:layout_width="75dp"
                     android:layout_height="75dp"
                     android:padding="16dp"
-                    android:src="@drawable/ic_logout" />
+                    android:src="@drawable/logout" />
 
                 <TextView
                     android:id="@+id/Logout"
@@ -99,23 +149,14 @@
                     android:gravity="center_vertical"
                     android:padding="16dp"
                     android:textStyle="bold"
-                    android:text="@string/logout"
+                    android:text="@string/Logout"
                     android:textColor="@color/primary_text"
                     android:textSize="20sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <Button
-            android:id="@+id/map"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="168dp"
-            android:layout_marginLeft="168dp"
-            android:layout_marginTop="216dp"
-            android:text="map"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+
     </LinearLayout>
 
-
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

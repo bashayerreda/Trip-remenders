@@ -1,25 +1,19 @@
 package com.example.tripremenders;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
+
 import com.example.tripremenders.models.NoteModel;
 import com.example.tripremenders.models.NoteViewModel;
 import com.example.tripremenders.models.TripModel;
@@ -32,7 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeActivity extends AppCompatActivity {
@@ -44,12 +38,13 @@ public class HomeActivity extends AppCompatActivity {
     ViewPager viewPager;
     TabLayout tabLayout;
     Toolbar toolbar;
-
+      FirebaseAuth firebaseAuth;
+      FirebaseUser firebaseUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        imageViewProfilePicture = findViewById(R.id.user_logo);
+
         viewPager = findViewById(R.id.pager);
         tabLayout = findViewById(R.id.tab_layout);
         toolbar = findViewById(R.id.myToolbar);
@@ -57,12 +52,12 @@ public class HomeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         setPagerAdapter();
         setTabLayout();
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        /*user = FirebaseAuth.getInstance().getCurrentUser();
         if (user.getPhotoUrl() != null) {
             profilePicture = user.getPhotoUrl().toString();
             profilePicture += "?type=large";
             Picasso.get().load(profilePicture).fit().placeholder(R.drawable.user_icon).into(imageViewProfilePicture);
-        }
+        }*/
         //firebaseAuth.getCurrentUser();
  //firebaseUser.getUid();
 
@@ -91,7 +86,7 @@ public class HomeActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        tripViewModel.insert(dataSnapshot.getValue(TripModel.class),null);
+                        tripViewModel.insert(dataSnapshot.getValue(TripModel.class), null);
                     }
                     databaseReferenceNotes.addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -120,6 +115,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void setPagerAdapter() {
         tripsFragmentPagerAdapter = new TripsFragmentPagerAdapter(getSupportFragmentManager());
+        viewPager.setPageTransformer(true, new ZoomAnimation());
         viewPager.setAdapter(tripsFragmentPagerAdapter);
     }
 
@@ -159,6 +155,8 @@ public class HomeActivity extends AppCompatActivity {
         backPressedTime = System.currentTimeMillis();
     }
 
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         requestCode &= 0xffff;
@@ -168,18 +166,5 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        getFloatingWidgetPermission();
-    }
-
-    private void getFloatingWidgetPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent, 100);
-        }
     }
 }

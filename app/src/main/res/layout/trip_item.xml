@@ -44,9 +44,10 @@
                             android:layout_margin="10dp"
                             android:layout_weight="3"
                             android:text="Trip name"
+                            android:fontFamily="@font/amin"
                             android:textColor="@color/primary_dark"
                             android:textSize="20sp"
-                            android:textStyle="bold" />
+                      />
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -89,7 +90,7 @@
 
                                 <TextView
                                     android:id="@+id/trip_date"
-                                    android:layout_width="80dp"
+                                    android:layout_width="100dp"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:layout_margin="2dp"

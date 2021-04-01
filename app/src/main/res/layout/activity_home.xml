@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-       android:background="@color/LightBlue"
+       android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,14 +19,6 @@
         <include layout="@layout/appbar_item"></include>
 
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/user_logo"
-            android:layout_width="88dp"
-            android:layout_height="80dp"
-            android:src="@drawable/user_icon"
-            app:civ_border_color="#134563"
-            android:layout_marginLeft="40dp"
-            app:civ_border_width="3dp" />
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/pager"
@@ -39,10 +31,13 @@
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/primary"
+                android:background="@drawable/toolbar_map"
                 app:tabIndicatorColor="@color/white"
                 app:tabSelectedTextColor="@color/white"
-                app:tabTextColor="@color/black" />
+                app:tabTextColor="@color/black"
+
+
+              />
 
         </androidx.viewpager.widget.ViewPager>
 

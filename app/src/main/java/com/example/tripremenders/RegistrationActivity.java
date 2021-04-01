@@ -31,19 +31,16 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.Arrays;
 
 public class RegistrationActivity extends AppCompatActivity {
-
     private final int GOOGLE_SIGN_IN = 123;
-
     private final String googleActivityTAG = "GoogleActivity";
     private final String facebookActivityTAG = "FacebookActivity";
-
+    private static final String TAGEMAILSIGNIN = "TAGEMAILSIGNIN";
+    private static final String TAGPASSWORDSIGNIN = "TAGPASSWORDSIGNIN";
+    String email, password;
     private Button buttonSignUp, buttonSignIn;
     private TextInputLayout editTextEmail;
     private TextInputLayout editTextPassword;
@@ -60,17 +57,19 @@ public class RegistrationActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
-            openHomeActivity();
+            openHomeActivityWithoutExtra();
         } else {
             setContentView(R.layout.activity_registration);
-
             editTextEmail = findViewById(R.id.inputLayout_email);
             editTextPassword = findViewById(R.id.inputLayout_password);
             buttonSignIn = findViewById(R.id.btn_log_in);
             googleLogin = findViewById(R.id.gmail_login);
             facebookLogin = findViewById(R.id.facebook_login);
             buttonSignUp = findViewById(R.id.btn_sign_up);
-
+            if (savedInstanceState != null) {
+                editTextEmail.getEditText().setText(savedInstanceState.getString(TAGEMAILSIGNIN));
+                editTextPassword.getEditText().setText(savedInstanceState.getString(TAGPASSWORDSIGNIN));
+            }
             buttonSignUp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -86,8 +85,8 @@ public class RegistrationActivity extends AppCompatActivity {
             // login using name and password
             buttonSignIn.setOnClickListener(v -> {
 
-                final String email = String.valueOf(editTextEmail.getEditText().getText());
-                final String password = String.valueOf(editTextPassword.getEditText().getText());
+                email = String.valueOf(editTextEmail.getEditText().getText());
+                password = String.valueOf(editTextPassword.getEditText().getText());
 
                 if (email.isEmpty()) {
                     editTextEmail.setError("Enter your email");
@@ -103,21 +102,21 @@ public class RegistrationActivity extends AppCompatActivity {
 
                 firebaseAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            openHomeActivity();
-                        } else {
-                            Toast.makeText(
-                                    RegistrationActivity.this,
-                                    task.getException().getMessage(),
-                                    Toast.LENGTH_SHORT).show();
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    openHomeActivity();
+                                } else {
+                                    Toast.makeText(
+                                            RegistrationActivity.this,
+                                            task.getException().getMessage(),
+                                            Toast.LENGTH_SHORT).show();
 
-                            editTextEmail.getEditText().setText("");
-                            editTextPassword.getEditText().setText("");
-                        }
-                    }
-                });
+                                    editTextEmail.getEditText().setText("");
+                                    editTextPassword.getEditText().setText("");
+                                }
+                            }
+                        });
             });
 
 
@@ -251,6 +250,32 @@ public class RegistrationActivity extends AppCompatActivity {
         intent.putExtra("getDataFromFirebase", true);
         startActivity(intent);
         finishAffinity();
+    }
+
+    private void openHomeActivityWithoutExtra() {
+        Intent intent = new Intent(RegistrationActivity.this, HomeActivity.class);
+        startActivity(intent);
+        finishAffinity();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        email = editTextEmail.getEditText().getText().toString();
+        password = editTextPassword.getEditText().getText().toString();
+
+
+        outState.putString(TAGEMAILSIGNIN, email);
+        outState.putString(TAGPASSWORDSIGNIN, password);
+
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+
+        super.onRestoreInstanceState(savedInstanceState);
+
+
     }
 
 }

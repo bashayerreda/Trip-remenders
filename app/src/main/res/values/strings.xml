@@ -50,5 +50,8 @@
     <string name="logout">logout</string>
     <string name="title_activity_maps">Map</string>
     <string name="later">Later</string>
+    <string name="Sync">Sync</string>
+    <string name="map">Map</string>
+    <string name="User_Name">User Name</string>
 
 </resources>

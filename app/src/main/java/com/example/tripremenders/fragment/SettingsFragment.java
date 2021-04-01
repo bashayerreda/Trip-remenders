@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,14 +28,47 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SettingsFragment  extends Fragment {
+import de.hdodenhof.circleimageview.CircleImageView;
 
+public class SettingsFragment  extends Fragment {
+   String profilePicture;
+   TextView textViewUsername;
+    CircleImageView imageViewProfilePicture;
+    FirebaseUser user;
+    private TripViewModel tripViewModel;
+    PastTripAdapter pastTripAdapter;
+    ArrayList<TripModel>trips;
+    FirebaseAuth firebaseAuth;
+    DatabaseReference databaseReference;
     public static final String SEND_TRIPS_EXTRA = "trips Data";
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user.getPhotoUrl() != null) {
+            profilePicture = user.getPhotoUrl().toString();
+            profilePicture += "?type=large";
+            Picasso.get().load(profilePicture).fit().placeholder(R.drawable.user_icon).into(imageViewProfilePicture);
+
+        }
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            if (user.getDisplayName() != null) {
+                String username = user.getDisplayName().toString();
+                textViewUsername.setText(username);
+            }
+        }
+    }
+
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -44,8 +76,12 @@ public class SettingsFragment  extends Fragment {
         return inflater.inflate(R.layout.fragment_settings, container, false);
     }
 
+
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+          imageViewProfilePicture = view.findViewById(R.id.user_logo);
+          textViewUsername =  view.findViewById(R.id.user_name_settings);
 
         TextView syncButton = view.findViewById(R.id.sync_button);
         syncButton.setOnClickListener(v -> {
@@ -131,7 +167,7 @@ public class SettingsFragment  extends Fragment {
             }
 
         });
-        Button btnmap = view.findViewById(R.id.map);
+        TextView btnmap = view.findViewById(R.id.map);
         btnmap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -147,10 +183,13 @@ public class SettingsFragment  extends Fragment {
                                 intent.putExtra(SEND_TRIPS_EXTRA,args);
                                 //startActivity(intent);
                                 startActivity(intent);
+                                getActivity().finish();
                             }
                         });
 
+
             }
+
         });
 
     }

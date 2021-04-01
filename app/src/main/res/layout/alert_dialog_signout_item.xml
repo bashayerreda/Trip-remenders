@@ -11,7 +11,8 @@
         android:layout_marginTop="16dp"
         android:gravity="center"
         android:padding="16dp"
-        android:text="doYouWantSingOut"
+        android:text="Do you want to sign out ?"
+        android:fontFamily="@font/aniq"
         android:textColor="@color/black"
         android:textSize="20sp" />
 
@@ -30,9 +31,11 @@
             android:layout_weight="1"
             android:text="no"
             android:textAlignment="center"
-            android:textColor="@color/black"
+            android:textColor="@color/LightBlue"
             android:textSize="22sp"
-            android:gravity="center_horizontal" />
+            android:gravity="center_horizontal"
+            android:textStyle="bold"
+            />
 
         <TextView
             android:id="@+id/text_yes_logout"
@@ -40,8 +43,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="yes"
+            android:textStyle="bold"
             android:textAlignment="center"
-            android:textColor="@color/black"
+            android:textColor="@color/red"
             android:textSize="22sp"
             android:gravity="center_horizontal" />
 

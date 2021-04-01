@@ -35,12 +35,15 @@ import java.util.Arrays;
 public class SignUpActivity extends AppCompatActivity {
 
     private final int GOOGLE_SIGN_IN = 123;
-
+    private static final String TAGSTRINGNAME = "TAGNAME";
+    private static final String TAGEMAIL = "TAGEMAIL";
+    private static final String TAGPASSWORD = "TAGPASSWORD";
+    private static final String TAGSCPASSWORD = "TAGCPASSWORD";
     private static final String googleActivityTAG = "GoogleActivity";
     private static final String facebookActivityTAG = "FacebookActivity";
-
+    private static final String KEY_INDEX = "index";
     private CallbackManager mCallbackManager;
-
+    String username,email,password,confirmPassword ;
     private Button signUp;
     private Button login;
     private TextInputLayout inputLayoutUsername;
@@ -65,6 +68,13 @@ public class SignUpActivity extends AppCompatActivity {
         inputLayoutConfirmPassword = findViewById(R.id.inputLayout_confirmPassword);
         signUp = findViewById(R.id.btn_sign_up);
         imageViewUserPhotoProfile = findViewById(R.id.user_logo);
+        if (savedInstanceState != null) {
+            inputLayoutUsername.getEditText().setText(savedInstanceState.getString(TAGSTRINGNAME));
+            inputLayoutEmail.getEditText().setText(savedInstanceState.getString(TAGEMAIL));
+        inputLayoutPassword.getEditText().setText(savedInstanceState.getString(TAGPASSWORD));
+          inputLayoutConfirmPassword.getEditText().setText(savedInstanceState.getString(TAGSCPASSWORD));
+        }
+
         firebaseAuth = FirebaseAuth.getInstance();
 
         googleSignUp.setOnClickListener(new View.OnClickListener() {
@@ -73,7 +83,6 @@ public class SignUpActivity extends AppCompatActivity {
                 signUpGoogle();
             }
         });
-
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,6 +102,8 @@ public class SignUpActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(SignUpActivity.this,RegistrationActivity.class);
+                startActivity(intent);
                 finish();
             }
         });
@@ -120,14 +131,15 @@ public class SignUpActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
     private void signUpUsingEmailPassword() {
 
-        final String username =String.valueOf(inputLayoutUsername.getEditText().getText());
-        final String email =String.valueOf(inputLayoutEmail.getEditText().getText());
-        final String password = String.valueOf(inputLayoutPassword.getEditText().getText());
-        final String confirmPassword = String.valueOf(inputLayoutConfirmPassword.getEditText().getText());
+      username =String.valueOf(inputLayoutUsername.getEditText().getText());
+      email =String.valueOf(inputLayoutEmail.getEditText().getText());
+       password = String.valueOf(inputLayoutPassword.getEditText().getText());
+       confirmPassword = String.valueOf(inputLayoutConfirmPassword.getEditText().getText());
 
         if (username.isEmpty()) {
             inputLayoutUsername.setError("enter username");
@@ -261,5 +273,25 @@ public class SignUpActivity extends AppCompatActivity {
         finishAffinity();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
+       username = inputLayoutUsername.getEditText().getText().toString();
+       email=inputLayoutEmail.getEditText().getText().toString();
+       password =inputLayoutPassword.getEditText().getText().toString();
+       confirmPassword = inputLayoutConfirmPassword.getEditText().getText().toString();
+                outState.putString(TAGSTRINGNAME, username);
+                outState.putString(TAGEMAIL,email);
+                outState.putString(TAGPASSWORD,password);
+               outState.putString(TAGSCPASSWORD,confirmPassword);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+
+        super.onRestoreInstanceState(savedInstanceState);
+
+
+    }
 }
