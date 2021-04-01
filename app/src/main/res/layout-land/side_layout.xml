@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/image_view_slide"
+        android:layout_width="232dp"
+        android:layout_height="198dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:padding="32dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/triphints1" />
+
+    <TextView
+        android:id="@+id/textview_heading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/khebrat"
+        android:gravity="center"
+        android:text="trip reminders"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="50sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textview_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/tansik"
+        android:gravity="center_horizontal"
+
+        android:text="remember all your important trips "
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="38sp"
+        android:textStyle="normal" />
+</LinearLayout>

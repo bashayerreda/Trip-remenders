@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/be_gradient"
+    android:orientation="vertical"
+    android:weightSum="5">
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager_id"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4.5" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
+        android:layout_weight=".5"
+        android:paddingHorizontal="20dp"
+        tools:context=".MainActivity">
+
+        <LinearLayout
+            android:id="@+id/linear_layout_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal" />
+
+        <Button
+            android:id="@+id/button_previous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif-black"
+            android:text="previous"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:visibility="invisible"
+            android:layout_alignParentLeft="true" />
+
+        <Button
+            android:id="@+id/button_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif-black"
+            android:text="Next"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:layout_alignParentRight="true" />
+
+    </RelativeLayout>
+</LinearLayout>
