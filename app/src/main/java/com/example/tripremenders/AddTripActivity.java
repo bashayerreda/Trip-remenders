@@ -6,17 +6,13 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,19 +31,15 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.tripremenders.broadcast.AlertReceiver;
-import com.example.tripremenders.models.NoteModel;
 import com.example.tripremenders.models.TripViewModel;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import com.example.tripremenders.fragment.DatePickerFragment;
@@ -82,6 +74,7 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
             Bundle bundle = msg.getData();
             long[] ids = bundle.getLongArray("ids");
             int tripId = (int) ids[0];
+            Log.i("TAG", "test1: handler: " + calendar.getTimeInMillis() + " tripId: " + tripId);
             startAlarm(calendar, tripId);
         }
     };
@@ -271,6 +264,8 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
     private void startAlarm(Calendar calendar, int tripId) {
 
 
+        Log.i("TAG", "test1: startAlarm: " + calendar.getTimeInMillis() + " tripId: " + tripId);
+
         AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(this, AlertReceiver.class);
@@ -288,9 +283,22 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
 
     }
 
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
+
+
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putDouble("start_Lat", model.getStartPointLat());
+        outState.putDouble("start_Lng", model.getStartPointLng());
+        outState.putDouble("End_Lat", model.getEndPointLat());
+        outState.putDouble("End_Lng", model.getEndPointLng());
+
+        outState.putString("date", model.getDate());
+        outState.putString("time", model.getTime());
+
+        outState.putLong("calender", calendar.getTimeInMillis());
 //
 //        outState.putString(TAG_TRIP_NAME, tripName.getText().toString());
 //        outState.putString(TAG_START_POINT, startPoint.getText().toString());
@@ -298,6 +306,20 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
 //        outState.putString(TAG_DATE,  date.getText().toString());
 //        outState.putString(TAG_TIME, time.getText().toString());
 //        outState.putString(TAG_SPINNER, spinner.getSelectedItem().toString());
-//    }
+    }
 
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        model.setStartPointLat(savedInstanceState.getDouble("start_Lat"));
+        model.setStartPointLng(savedInstanceState.getDouble("start_Lng"));
+        model.setEndPointLat(savedInstanceState.getDouble("End_Lat"));
+        model.setEndPointLng(savedInstanceState.getDouble("End_Lng"));
+
+        model.setDate(savedInstanceState.getString("date"));
+        model.setTime(savedInstanceState.getString("time"));
+
+        calendar.setTimeInMillis(savedInstanceState.getLong("calender"));
+    }
 }

@@ -19,12 +19,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TripRemenders">
-		<activity android:name=".activity_tips"></activity>
+        <activity android:name=".activity_tips" />
 
 
         <activity
             android:name=".DialogMessageActivity"
-            android:theme="@style/Theme.AppCompat.Transparent.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Transparent.NoActionBar"
+            android:screenOrientation="portrait"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

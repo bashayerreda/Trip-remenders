@@ -83,8 +83,7 @@ public class UpcomingTripsFragment extends Fragment {
             public void onClick(TripModel tripModel) {
 //                tripModel.setStatus(1);
 //                tripViewModel.update(tripModel);
-                LatLng latLng = new LatLng(tripModel.getEndPointLat(), tripModel.getEndPointLng());
-                DisplayTrack(latLng);
+                DisplayTrack(tripModel.getEndPoint());
             }
         };
 
@@ -98,7 +97,7 @@ public class UpcomingTripsFragment extends Fragment {
 
     }
 
-    private void DisplayTrack(LatLng latLng) {
+    private void DisplayTrack(String endPoint) {
         //if device dosnt have mape installed then redirect it to play store
         //https://www.google.com/maps/search/?api=1&query=47.5951518,-122.3316393
 
@@ -106,7 +105,7 @@ public class UpcomingTripsFragment extends Fragment {
 
         try {
             //when google map installed
-            Uri uri = Uri.parse("geo:0,0?q=" + latLng.latitude + "," + latLng.longitude);
+            Uri uri = Uri.parse("https://www.google.co.in/maps/dir/" + "/" + endPoint);
             /*Uri uri = Uri.parse("https://www.google.com/maps/search/?api&query=" +
                     latLng.longitude + "," + latLng.latitude); */
             //Action view with uri
