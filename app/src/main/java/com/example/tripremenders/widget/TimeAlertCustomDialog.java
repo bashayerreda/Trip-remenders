@@ -1,7 +1,10 @@
 package com.example.tripremenders.widget;
 
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -51,9 +54,30 @@ public class TimeAlertCustomDialog extends AppCompatDialogFragment {
         laterButton = view.findViewById(R.id.later);
         cancelButton = view.findViewById(R.id.cancel);
         startButton.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "startButton", Toast.LENGTH_SHORT).show();
             this.dismiss();
             stop(view);
+            try {
+                //when google map installed
+                Uri uri = Uri.parse("geo:0,0?q=" + trip.getEndPointLat() + "," + trip.getEndPointLat());
+            /*Uri uri = Uri.parse("https://www.google.com/maps/search/?api&query=" +
+                    latLng.longitude + "," + latLng.latitude); */
+                //Action view with uri
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                intent.setPackage("com.google.android.apps.maps");
+                //set flag
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+
+
+            } catch (ActivityNotFoundException e) {
+                //when google map is not initialize
+                Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.apps.maps");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                //set flag
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                startActivity(intent);
+            }
             getActivity().finish();
         });
         laterButton.setOnClickListener(v -> {

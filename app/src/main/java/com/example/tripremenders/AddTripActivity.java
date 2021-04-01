@@ -66,9 +66,6 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
 
     private TripViewModel tripViewModel;
 
-    private ArrayList<Integer> idArrayListr;
-    private ArrayList<Integer> tripIdArrayList;
-    private ArrayList<String> noteArrayList;
 
 
     Handler handler = new Handler(Looper.myLooper()) {
@@ -82,6 +79,7 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
         }
     };
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,6 +126,8 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
             model.setStartPointLng(editTrip.getStartPointLng());
             model.setEndPointLat(editTrip.getEndPointLat());
             model.setEndPointLng(editTrip.getEndPointLng());
+            model.setTimestamp(editTrip.getTimestamp());
+            calendar.setTimeInMillis(editTrip.getTimestamp());
         }
 
         Places.initialize(getApplicationContext(), getString(R.string.api_key));
@@ -187,7 +187,9 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
                 tripViewModel = ViewModelProviders.of(this).get(TripViewModel.class);
 
                 if (editTrip != null) {
+                    Log.i("TAG", "startAlarm: " + calendar.getTimeInMillis());
                     tripViewModel.update(model);
+                    startAlarm(calendar, model.getId());
                 } else {
 
                     tripViewModel.insert(model,handler);
@@ -214,12 +216,6 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
             endPoint.setText(place.getAddress());
             model.setEndPointLat(place.getLatLng().latitude);
             model.setEndPointLng(place.getLatLng().longitude);
-        } else if (requestCode == 10 && resultCode == RESULT_OK) {
-            idArrayListr = data.getIntegerArrayListExtra("idArrayListr");
-            tripIdArrayList = data.getIntegerArrayListExtra("tripIdArrayList");
-            noteArrayList = data.getStringArrayListExtra("noteArrayList");
-        } else {
-            Toast.makeText(this, "null", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -249,7 +245,7 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
 
         model.setTime(s);
         time.setText(s);
-        //Toast.makeText(this, hourOfDay + "", Toast.LENGTH_SHORT).show();
+        Log.i("TAG", "startAlarm: " + calendar.getTimeInMillis());
     }
 
     @Override // datePicker
@@ -261,15 +257,18 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
         String s = DateFormat.getDateInstance().format(calendar.getTime());
         model.setDate(s);
         date.setText(s);
+        Log.i("TAG", "startAlarm: " + calendar.getTimeInMillis());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void startAlarm(Calendar calendar, int tripId) {
 
+
         AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(this, AlertReceiver.class);
 
+        intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         intent.putExtra("tripId", tripId);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, tripId, intent, 0);

@@ -18,9 +18,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tripremenders.R;
 import com.example.tripremenders.adapters.UpcomingTripAdapter;
+import com.example.tripremenders.models.NoteModel;
 import com.example.tripremenders.models.TripModel;
 import com.example.tripremenders.models.TripViewModel;
+import com.example.tripremenders.widget.NoteListCustomDialog;
 import com.google.android.gms.maps.model.LatLng;
+import com.txusballesteros.bubbles.BubbleLayout;
+import com.txusballesteros.bubbles.BubblesManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +35,12 @@ public class UpcomingTripsFragment extends Fragment {
     UpcomingTripAdapter upcomingTripAdapter;
     private TripViewModel tripViewModel;
     TripModel tripModel;
-    public  UpcomingTripAdapter tripAdapter;
+    public UpcomingTripAdapter tripAdapter;
     RecyclerView recyclerView;
+
+    private BubblesManager bubblesManager;
+    private BubblesManager bubblesTrashManager;
+
     public UpcomingTripsFragment() {
         // Required empty public constructor
     }
@@ -89,12 +97,16 @@ public class UpcomingTripsFragment extends Fragment {
         });
 
     }
+
     private void DisplayTrack(LatLng latLng) {
         //if device dosnt have mape installed then redirect it to play store
         //https://www.google.com/maps/search/?api=1&query=47.5951518,-122.3316393
+
+        show();
+
         try {
             //when google map installed
-            Uri uri = Uri.parse("geo:0,0?q="+latLng.longitude + "," + latLng.latitude);
+            Uri uri = Uri.parse("geo:0,0?q=" + latLng.latitude + "," + latLng.longitude);
             /*Uri uri = Uri.parse("https://www.google.com/maps/search/?api&query=" +
                     latLng.longitude + "," + latLng.latitude); */
             //Action view with uri
@@ -103,6 +115,7 @@ public class UpcomingTripsFragment extends Fragment {
             //set flag
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
+
 
 
         } catch (ActivityNotFoundException e) {
@@ -116,6 +129,33 @@ public class UpcomingTripsFragment extends Fragment {
         }
 
 
+    }
+
+    private void show() {
+        bubblesManager = new BubblesManager.Builder(getActivity())
+                .build();
+        bubblesManager.initialize();
+
+        bubblesTrashManager = new BubblesManager.Builder(getActivity())
+                .setTrashLayout(R.layout.trash_item)
+                .build();
+        bubblesTrashManager.initialize();
+
+        BubbleLayout bubbleView = (BubbleLayout) LayoutInflater
+                .from(getActivity()).inflate(R.layout.floating_widget_item, null);
+
+        bubblesManager.addBubble(bubbleView, 60, 20);
+
+        bubbleView.setOnBubbleClickListener(bubble -> {
+            ArrayList<NoteModel> awd = new ArrayList<>();
+            NoteModel ddd = new NoteModel();
+            ddd.setNote("awdadawdad");
+            awd.add(ddd);
+            awd.add(ddd);
+            awd.add(ddd);
+            NoteListCustomDialog noteListCustomDialog = new NoteListCustomDialog(awd);
+            noteListCustomDialog.show(getFragmentManager(), "DialogTest");
+        });
     }
 
 }
