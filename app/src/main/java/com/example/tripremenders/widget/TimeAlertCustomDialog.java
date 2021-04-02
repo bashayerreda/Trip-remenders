@@ -71,7 +71,6 @@ public class TimeAlertCustomDialog extends AppCompatDialogFragment {
         });
         laterButton.setOnClickListener(v -> {
             this.dismiss();
-            Toast.makeText(getContext(), "laterButton", Toast.LENGTH_SHORT).show();
             stop();
             helper = new NotificationHelper(getActivity());
             sendOnChannel1();
@@ -79,7 +78,6 @@ public class TimeAlertCustomDialog extends AppCompatDialogFragment {
         });
         cancelButton.setOnClickListener(v -> {
             this.dismiss();
-            Toast.makeText(getContext(), "cancelButton", Toast.LENGTH_SHORT).show();
             stop();
             getActivity().finish();
         });
