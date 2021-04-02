@@ -1,6 +1,7 @@
 package com.example.tripremenders.adapters;
 
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.Gravity;
@@ -24,26 +25,34 @@ import androidx.transition.TransitionListenerAdapter;
 import androidx.transition.TransitionManager;
 
 import com.example.tripremenders.AddTripActivity;
+import com.example.tripremenders.MainActivity;
 import com.example.tripremenders.NoteActivity;
 import com.example.tripremenders.R;
+import com.example.tripremenders.RegistrationActivity;
 import com.example.tripremenders.models.TripModel;
 import com.example.tripremenders.models.TripViewModel;
+import com.facebook.login.LoginManager;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
 public class UpcomingTripAdapter extends RecyclerView.Adapter<UpcomingTripAdapter.ViewHolder> {
 
-    ArrayList<TripModel>  trips;
+    ArrayList<TripModel> trips;
     Context context;
     MenuInflater menuInflater;
-   public RecyclerView recyclerView;
+    public RecyclerView recyclerView;
     public StartTrip setStartTrip = null;
-   public TripModel tripModel;
+    public TripModel tripModel;
     LinearLayout lastLinearLayoutClickOn;
+
     public interface StartTrip {
         void onClick(TripModel tripModel);
     }
-    public UpcomingTripAdapter(){}
+
+    public UpcomingTripAdapter() {
+    }
+
     public UpcomingTripAdapter(Context context,
                                ArrayList<TripModel> trips,
                                MenuInflater menuInflater,
@@ -74,7 +83,7 @@ public class UpcomingTripAdapter extends RecyclerView.Adapter<UpcomingTripAdapte
         holder.startPointTextView.setText(trips.get(position).getStartPoint());
         holder.endPointTextView.setText(trips.get(position).getEndPoint());
         holder.tripTypeTextView.setText(trips.get(position).getTripType());
-        if(trips.get(position).getTripType().equals("One Direction")) {
+        if (trips.get(position).getTripType().equals("One Direction")) {
             holder.tripeTypeImageView.setImageResource(R.drawable.ic_ray_start_arrow);
         } else {
             holder.tripeTypeImageView.setImageResource(R.drawable.ic_multiple_stop);
@@ -87,7 +96,7 @@ public class UpcomingTripAdapter extends RecyclerView.Adapter<UpcomingTripAdapte
                     lastLinearLayoutClickOn.setVisibility(View.GONE);
                 }
             }
-            lastLinearLayoutClickOn =  holder.buttonsLinearLayout;
+            lastLinearLayoutClickOn = holder.buttonsLinearLayout;
 
             final int visibilityOfButtons = holder.buttonsLinearLayout.getVisibility();
 
@@ -98,7 +107,7 @@ public class UpcomingTripAdapter extends RecyclerView.Adapter<UpcomingTripAdapte
                 @Override
                 public void onTransitionStart(@NonNull Transition transition) {
                     super.onTransitionStart(transition);
-                    if(visibilityOfButtons == View.GONE) {
+                    if (visibilityOfButtons == View.GONE) {
                         recyclerView.smoothScrollToPosition(position);
                     }
                 }
@@ -108,8 +117,8 @@ public class UpcomingTripAdapter extends RecyclerView.Adapter<UpcomingTripAdapte
             TransitionManager.beginDelayedTransition(holder.tripLinearLayout, transition);
             holder.buttonsLinearLayout
                     .setVisibility(
-                            holder.buttonsLinearLayout.getVisibility() == View.GONE  ?
-                                    View.VISIBLE : View.GONE );
+                            holder.buttonsLinearLayout.getVisibility() == View.GONE ?
+                                    View.VISIBLE : View.GONE);
         });
         if (setStartTrip != null) {
             holder.btnStart.setOnClickListener(new View.OnClickListener() {
@@ -134,14 +143,33 @@ public class UpcomingTripAdapter extends RecyclerView.Adapter<UpcomingTripAdapte
         });
 
         holder.deleteTripButton.setOnClickListener(v -> {
-            TripViewModel tripViewModel = ViewModelProviders.of((FragmentActivity) context).get(TripViewModel.class);
-            tripViewModel.delete(trips.get(position));
-        });
 
+            final Dialog dialog = new Dialog(context);
+            dialog.setContentView(R.layout.delete_dialog);
+            dialog.setCancelable(false);
+            dialog.show();
+            TextView textViewYesLogout = dialog.findViewById(R.id.text_yes_logout);
+            TextView textViewNoLogout = dialog.findViewById(R.id.text_no_logout);
+            textViewYesLogout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                    TripViewModel tripViewModel = ViewModelProviders.of((FragmentActivity) context).get(TripViewModel.class);
+                    tripViewModel.delete(trips.get(position));
+                }
+            });
+            textViewNoLogout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                }
+            });
+
+        });
 
     }
 
-    public void setTrips(ArrayList<TripModel> trips){
+    public void setTrips(ArrayList<TripModel> trips) {
         this.trips = trips;
         notifyDataSetChanged();
     }
@@ -173,6 +201,7 @@ public class UpcomingTripAdapter extends RecyclerView.Adapter<UpcomingTripAdapte
         LinearLayout buttonsLinearLayout;
 
         Button btnStart;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -186,7 +215,7 @@ public class UpcomingTripAdapter extends RecyclerView.Adapter<UpcomingTripAdapte
             tripLinearLayout = itemView.findViewById(R.id.trip_linear_layout);
             buttonsLinearLayout = itemView.findViewById(R.id.buttons_linear_layout);
             btnStart = itemView.findViewById(R.id.btn_start);
-            editTripButton =  itemView.findViewById(R.id.edit_trip);
+            editTripButton = itemView.findViewById(R.id.edit_trip);
             addNoteTripButton = itemView.findViewById(R.id.add_note_trip);
             deleteTripButton = itemView.findViewById(R.id.delete_trip);
         }
