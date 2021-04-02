@@ -169,14 +169,17 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
             if (date.getText().toString().isEmpty()) {
                 date.setError("Required");
             }
-            if (!(tripName.getText().toString().isEmpty() || startPoint.getText().toString().isEmpty() || endPoint.getText().toString().isEmpty() || date.getText().toString().isEmpty() || time.getText().toString().isEmpty())) {
+            if (calendar.before(Calendar.getInstance())) {
+                Toast.makeText(this, "Enter Valid Time", Toast.LENGTH_SHORT).show();
+            }
+            if (!(tripName.getText().toString().isEmpty() || startPoint.getText().toString().isEmpty() || endPoint.getText().toString().isEmpty() || date.getText().toString().isEmpty() ||calendar.before(Calendar.getInstance())|| time.getText().toString().isEmpty())) {
 
                 model.setName(tripName.getText().toString());
                 model.setStartPoint(startPoint.getText().toString());
                 model.setEndPoint(endPoint.getText().toString());
 
-                Toast.makeText(this, model.getTripType(), Toast.LENGTH_SHORT).show();
-                Toast.makeText(this, String.valueOf(calendar.getTimeInMillis()), Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, model.getTripType(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, String.valueOf(calendar.getTimeInMillis()), Toast.LENGTH_LONG).show();
 
                 Log.i("TAG", "onCreate: " + calendar.getTimeInMillis());
 
@@ -244,7 +247,6 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
         calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.SECOND, 0);
         String s = DateFormat.getTimeInstance(DateFormat.SHORT).format(calendar.getTime());
-
         model.setTime(s);
         time.setText(s);
         Log.i("TAG", "startAlarm: " + calendar.getTimeInMillis());
@@ -284,8 +286,6 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
         manager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
 
     }
-
-
 
 
     @Override

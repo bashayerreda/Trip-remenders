@@ -8,11 +8,13 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical">
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="177dp"
         android:background="@drawable/toolbar_user" />
+
     <TextView
         android:id="@+id/textView_login"
         android:layout_width="wrap_content"
@@ -20,18 +22,21 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="22dp"
         android:fontFamily="@font/khebrat"
-        android:text="@string/tripo"
+        android:text="@string/k_h_o_r_o_g_t_y"
         android:textColor="@color/white"
         android:textSize="50sp"
         android:textStyle="bold" />
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/sv"
         android:layout_width="match_parent"
         android:layout_height="400dp"
         android:layout_below="@+id/header">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/card_view"
                 android:layout_width="match_parent"
@@ -40,17 +45,20 @@
                 app:cardElevation="4dp"
                 card_view:cardCornerRadius="15dp"
                 card_view:contentPadding="18dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingBottom="50dp">
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/inputLayout_email"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp">
+
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -58,11 +66,13 @@
                             android:hint="@string/email"
                             android:inputType="textEmailAddress" />
                     </com.google.android.material.textfield.TextInputLayout>
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/inputLayout_password"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -71,6 +81,7 @@
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
+
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -83,6 +94,7 @@
                 android:layout_marginTop="-50dp"
                 android:layout_marginRight="35dp"
                 android:elevation="10dp">
+
                 <Button
                     android:id="@+id/btn_log_in"
                     android:layout_width="match_parent"
@@ -95,6 +107,7 @@
                     android:textSize="20sp"
                     app:shapeAppearanceOverlay="@style/leaf" />
             </RelativeLayout>
+
             <TextView
                 android:id="@+id/text_or"
                 android:layout_width="wrap_content"
@@ -105,6 +118,7 @@
                 android:fontFamily="@font/aniq"
                 android:text="@string/or"
                 android:textSize="13sp" />
+
             <LinearLayout
                 android:id="@+id/login_icons"
                 android:layout_width="match_parent"
@@ -118,6 +132,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:src="@drawable/ic_facebook" />
+
                 <ImageView
                     android:id="@+id/gmail_login"
                     android:layout_width="0dp"
@@ -125,6 +140,7 @@
                     android:layout_weight="1"
                     android:src="@drawable/ic_google" />
             </LinearLayout>
+
             <Button
                 android:id="@+id/btn_sign_up"
                 android:layout_width="match_parent"

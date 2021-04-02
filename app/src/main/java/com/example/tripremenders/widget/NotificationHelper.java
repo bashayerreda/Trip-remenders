@@ -76,8 +76,6 @@ public class NotificationHelper extends ContextWrapper {
                 .setColor(getResources().getColor(R.color.primary))
                 .setSmallIcon(R.drawable.ic_note_add)
                 .setSound(defaultSoundUri)
-                .addAction(R.drawable.ic_event, "add", action)
-                //.addAction(R.drawable.ic_event, "123", action)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
         return builder;

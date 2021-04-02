@@ -49,7 +49,7 @@ public class HomeActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.pager);
         tabLayout = findViewById(R.id.tab_layout);
         toolbar = findViewById(R.id.myToolbar);
-        toolbar.setTitle("Tripo");
+        toolbar.setTitle("Khorogty");
         setSupportActionBar(toolbar);
         setPagerAdapter();
         setTabLayout();

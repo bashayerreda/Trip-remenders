@@ -3,6 +3,7 @@ package com.example.tripremenders;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -27,7 +28,7 @@ public class NoteActivity extends AppCompatActivity implements NoteCustomDialog.
     private RecyclerView recyclerView;
     private NoteAdapter noteAdapter;
     private FloatingActionButton fab, save;
-
+    Toolbar toolbar;
     private NoteViewModel noteViewModel;
     private int tripId;
 
@@ -35,7 +36,8 @@ public class NoteActivity extends AppCompatActivity implements NoteCustomDialog.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note);
-
+        toolbar = findViewById(R.id.myToolbar);
+        toolbar.setTitle("Add Note");
         notes = new ArrayList<>();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);

@@ -154,7 +154,6 @@ public class TimeAlertCustomDialog extends AppCompatDialogFragment {
         } else {
             Intent floatingService = new Intent(getActivity(), WidgetService.class);
             floatingService.putExtra("tripUid", 50);
-
             getActivity().startService(floatingService);
         }
     }

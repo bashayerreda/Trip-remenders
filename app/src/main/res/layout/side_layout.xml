@@ -23,20 +23,20 @@
         android:gravity="center"
         android:text="trip reminders"
         android:textAlignment="center"
-        android:textColor="#fff"
+        android:textColor="@color/white"
         android:textSize="50sp"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/textview_desc"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/tansik"
+        android:gravity="center"
         android:padding="8dp"
         android:text="remember all your important trips "
         android:textAlignment="center"
-        android:textColor="#fff"
+        android:textColor="@color/white"
         android:textSize="38sp"
-        android:textStyle="normal"
-        android:gravity="center_horizontal" />
+        android:textStyle="normal" />
 </LinearLayout>

@@ -35,27 +35,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
             android:background="@android:color/transparent"
             android:fontFamily="sans-serif-black"
             android:text="previous"
             android:textColor="@color/white"
             android:textSize="14sp"
-            android:visibility="invisible"
-            android:layout_alignParentLeft="true" />
+            android:visibility="invisible" />
 
         <Button
             android:id="@+id/button_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
             android:background="@android:color/transparent"
             android:fontFamily="sans-serif-black"
             android:text="Next"
             android:textColor="@color/white"
-            android:textSize="14sp"
-            android:layout_alignParentRight="true" />
+            android:textSize="14sp" />
 
     </RelativeLayout>
 </LinearLayout>

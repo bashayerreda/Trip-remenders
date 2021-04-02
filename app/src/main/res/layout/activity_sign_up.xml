@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical">
+
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
@@ -14,18 +15,21 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:fontFamily="@font/khebrat"
-        android:text="@string/tripo"
+        android:text="@string/k_h_o_r_o_g_t_y"
         android:textColor="#0277BD"
         android:textSize="38sp"
         android:textStyle="bold" />
+
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/title">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_view"
                 android:layout_width="match_parent"
@@ -34,6 +38,7 @@
                 app:cardCornerRadius="15dp"
                 app:cardElevation="4dp"
                 app:contentPadding="18dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -126,6 +131,7 @@
                 android:layout_marginTop="-30dp"
                 android:layout_marginRight="35dp"
                 android:elevation="10dp">
+
                 <Button
                     android:id="@+id/btn_sign_up"
                     android:layout_width="match_parent"
@@ -139,6 +145,7 @@
                     android:textSize="20sp"
                     app:shapeAppearanceOverlay="@style/leaf" />
             </RelativeLayout>
+
             <TextView
                 android:id="@+id/text_or"
                 android:layout_width="wrap_content"
@@ -149,12 +156,14 @@
                 android:fontFamily="@font/aniq"
                 android:text="@string/or"
                 android:textSize="25sp" />
+
             <LinearLayout
                 android:id="@+id/login_icons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/text_or"
                 android:paddingHorizontal="20dp">
+
                 <ImageView
                     android:id="@+id/facebook_login"
                     android:layout_width="0dp"
@@ -162,6 +171,7 @@
                     android:layout_weight="1"
                     android:background="?android:attr/selectableItemBackground"
                     android:src="@drawable/ic_facebook" />
+
                 <ImageView
                     android:id="@+id/gmail_login"
                     android:layout_width="0dp"
@@ -170,6 +180,7 @@
                     android:background="?android:attr/selectableItemBackground"
                     android:src="@drawable/ic_google" />
             </LinearLayout>
+
             <Button
                 android:id="@+id/btn_sign_in"
                 android:layout_width="match_parent"
