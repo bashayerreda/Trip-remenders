@@ -31,7 +31,7 @@ import java.util.Random;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleMap.OnPolylineClickListener,
         GoogleMap.OnPolygonClickListener {
- int i ;
+
     private GoogleMap mMap;
     ArrayList<TripModel> trips;
     TripModel tripModel;
@@ -59,7 +59,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //LatLng sydney = new LatLng(-34, 151);
 
         //LatLng sydney = new LatLng(-34, 151);
-        for(i =0 ; i <trips.size();i++) {     //trips = new ArrayList<>();
+        for(int i =0 ; i <trips.size(); i++) {     //trips = new ArrayList<>();
             Random rnd = new Random();
             int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
 
@@ -70,6 +70,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             new LatLng(trips.get(i).getEndPointLat(),trips.get(i).getEndPointLng())
 
                     ).color(color));
+
             // [END maps_poly_activity_add_polyline]
             // [START_EXCLUDE silent]
             // Store a data object with the polyline, used here to indicate an arbitrary type.
@@ -83,10 +84,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         float zoomLevel = 16.0f;
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng (trips.get(0).getStartPointLat(), trips.get(0).getStartPointLng()),zoomLevel ));
-        googleMap.setOnPolylineClickListener(this);
-        googleMap.setOnPolygonClickListener(this);
+        if(trips.size() > 0) {
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(trips.get(0).getStartPointLat(), trips.get(0).getStartPointLng()), zoomLevel));
+            googleMap.setOnPolylineClickListener(this);
+            googleMap.setOnPolygonClickListener(this);
+        }
     }
+
     // [END maps_poly_activity_on_map_ready]
 
     // [START maps_poly_activity_style_polyline]
@@ -224,5 +228,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         polygon.setStrokeColor(strokeColor);
         polygon.setFillColor(fillColor);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
+    }
     // [END maps_poly_activity_style_polygon]
+
+
+
 }

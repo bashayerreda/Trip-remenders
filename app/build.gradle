@@ -76,13 +76,17 @@ dependencies {
     //picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
 
-    //bubbles
+    // bubbles
     implementation 'com.txusballesteros:bubbles:1.2.1'
 
     // ???
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
-    //google Api
+    // google Api
     implementation 'com.google.android.libraries.places:places:2.4.0'
+
+    // retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
 
 }

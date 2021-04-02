@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,6 +24,7 @@ import com.example.tripremenders.R;
 import com.example.tripremenders.adapters.NoteAdapter;
 import com.example.tripremenders.models.NoteModel;
 import com.example.tripremenders.models.NoteViewModel;
+import com.example.tripremenders.models.TripModel;
 
 import java.util.ArrayList;
 
@@ -37,58 +39,47 @@ public class WidgetService extends Service implements View.OnClickListener {
     private View expandedView;
     RecyclerView recyclerView;
     NoteAdapter adapter;
-    ArrayList<NoteModel> notes;
-    private NoteViewModel noteViewModel;
-    Handler noteHandler;
-    long tripUid;
+    private ArrayList<NoteModel> notes;
+    private TripModel tripModel;
+    private Button returnTrip ;
 
-    public WidgetService() {
-    }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        //get uid from reminderservice
-        if (intent != null && intent.hasExtra("tripUid")) {
-            Log.i(TAG, "uid from start: " + tripUid);
-            tripUid = intent.getLongExtra("tripUid", 60);
-//            new Thread() {
-//                @Override
-//                public void run() {
-//                    db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "DataBase-name").build();
-//                    TripNoteDao tripNoteDao = db.tripNoteDao();
-//                    notes.addAll(tripNoteDao.getAllNotes(tripUid).get(0).noteList);
-//                    noteHandler.sendEmptyMessage(1);
-//                }
-//            }.start();
-        }
-        return super.onStartCommand(intent, flags, startId);
-    }
+    public WidgetService() { }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        //initialize notes list
-        notes = new ArrayList<>();
-        notes.add(new NoteModel("test"));
-        notes.add(new NoteModel("test"));
-        notes.add(new NoteModel("test"));
-        notes.add(new NoteModel("test"));
-        notes.add(new NoteModel("test"));
-        notes.add(new NoteModel("test"));
-        notes.add(new NoteModel("test"));
-        notes.add(new NoteModel("test"));
-        notes.add(new NoteModel("test"));
-        notes.add(new NoteModel("test"));
-        notes.add(new NoteModel("test"));
-        notes.add(new NoteModel("test"));
-        notes.add(new NoteModel("test"));
-        //getting the widget layout from xml using layout inflater
+
         mFloatingView = LayoutInflater.from(this).inflate(R.layout.floating_widget_item, null);
+        collapsedView = mFloatingView.findViewById(R.id.layoutCollapsed);
+        expandedView = mFloatingView.findViewById(R.id.layoutExpanded);
+        recyclerView = expandedView.findViewById(R.id.floatingWidgetRecyclerView);
+        returnTrip = expandedView.findViewById(R.id.returnTrip);
+        mFloatingView.findViewById(R.id.buttonClose).setOnClickListener(this);
+
+
+        Log.i(TAG, "WidgetService: onCreate");
+
+
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        tripModel = (TripModel) intent.getSerializableExtra("tripModel");
+        notes = (ArrayList<NoteModel>) intent.getSerializableExtra("noteModels");
+
+        //initialize notes list
+        //getting the widget layout from xml using layout inflater
+        if(tripModel.getTripType().equals(""))
+
+        returnTrip.setOnClickListener(v -> {
+
+
+
+        });
+
         //setting the layout parameters
         WindowManager.LayoutParams params;
 
@@ -116,14 +107,11 @@ public class WidgetService extends Service implements View.OnClickListener {
         mWindowManager.addView(mFloatingView, params);
 
         //getting the collapsed and expanded view from the floating view
-        collapsedView = mFloatingView.findViewById(R.id.layoutCollapsed);
-        expandedView = mFloatingView.findViewById(R.id.layoutExpanded);
-        recyclerView = expandedView.findViewById(R.id.floatingWidgetRecyclerView);
+
         adapter = new NoteAdapter(WidgetService.this, notes);
         recyclerView.setLayoutManager(new LinearLayoutManager(WidgetService.this));
         recyclerView.setAdapter(adapter);
         //adding click listener to close button and expanded view
-        mFloatingView.findViewById(R.id.buttonClose).setOnClickListener(this);
         expandedView.setOnClickListener(this);
         //check when switching between view s
         collapsedView.setOnClickListener(v -> {
@@ -174,14 +162,14 @@ public class WidgetService extends Service implements View.OnClickListener {
         });
 
 
-        //to update recyclerview with notes
-        noteHandler = new Handler() {
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                super.handleMessage(msg);
-                adapter.notifyDataSetChanged();
-            }
-        };
+
+
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
     @Override

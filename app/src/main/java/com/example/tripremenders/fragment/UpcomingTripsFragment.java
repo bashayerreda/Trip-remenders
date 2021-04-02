@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.tripremenders.R;
 import com.example.tripremenders.adapters.UpcomingTripAdapter;
 import com.example.tripremenders.models.NoteModel;
+import com.example.tripremenders.models.NoteViewModel;
 import com.example.tripremenders.models.TripModel;
 import com.example.tripremenders.models.TripViewModel;
 import com.example.tripremenders.service.WidgetService;
@@ -29,32 +30,28 @@ import com.google.android.gms.maps.model.LatLng;
 import com.txusballesteros.bubbles.BubbleLayout;
 import com.txusballesteros.bubbles.BubblesManager;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UpcomingTripsFragment extends Fragment {
-    public UpcomingTripAdapter.StartTrip setStartTrip = null;
-    ArrayList<TripModel> trips;
-    UpcomingTripAdapter upcomingTripAdapter;
-    private TripViewModel tripViewModel;
-    TripModel tripModel;
-    public UpcomingTripAdapter tripAdapter;
-    RecyclerView recyclerView;
 
-    public UpcomingTripsFragment() {
-        // Required empty public constructor
-    }
+    private ArrayList<TripModel> trips;
+    private TripViewModel tripViewModel;
+    private NoteViewModel noteViewModel;
+
+    public UpcomingTripsFragment() { }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         tripViewModel = ViewModelProviders.of(this).get(TripViewModel.class);
+        noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_upcoming_trips, container, false);
     }
 
@@ -72,9 +69,9 @@ public class UpcomingTripsFragment extends Fragment {
         upcomingTripAdapter.setStartTrip = new UpcomingTripAdapter.StartTrip() {
             @Override
             public void onClick(TripModel tripModel) {
-//                tripModel.setStatus(1);
-//                tripViewModel.update(tripModel);
-                DisplayTrack(tripModel.getEndPoint());
+                tripModel.setStatus(1);
+                tripViewModel.update(tripModel);
+                DisplayTrack(tripModel);
             }
         };
 
@@ -87,47 +84,44 @@ public class UpcomingTripsFragment extends Fragment {
         });
     }
 
-    private void DisplayTrack(String endPoint) {
-        //if device dosnt have mape installed then redirect it to play store
-        //https://www.google.com/maps/search/?api=1&query=47.5951518,-122.3316393
+    private void DisplayTrack(TripModel tripModel) {
 
-        showBubble();
-
-        try {
-            //when google map installed
-            Uri uri = Uri.parse("https://www.google.co.in/maps/dir/" + "/" + endPoint);
-            /*Uri uri = Uri.parse("https://www.google.com/maps/search/?api&query=" +
-                    latLng.longitude + "," + latLng.latitude); */
-            //Action view with uri
-            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-            intent.setPackage("com.google.android.apps.maps");
-            //set flag
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-
-
-        } catch (ActivityNotFoundException e) {
-            //when google map is not initialize
-            Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.apps.maps");
-            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-            //set flag
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            startActivity(intent);
-        }
-    }
-
-    private void showBubble() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(getContext())) {
-
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                     Uri.parse("package:" + getActivity().getPackageName()));
             startActivityForResult(intent, 106);
         } else {
-            Intent floatingService = new Intent(getActivity(), WidgetService.class);
-            floatingService.putExtra("tripUid", 50);
 
-            getActivity().startService(floatingService);
+
+            noteViewModel.getAllNotesById(tripModel.getId()).observe(this, new Observer<List<NoteModel>>() {
+                @Override
+                public void onChanged(@Nullable final List<NoteModel> noteModels) {
+                    // Update the cached copy of the words in the adapter.
+                    Intent floatingService = new Intent(getActivity(), WidgetService.class);
+                    floatingService.putExtra("noteModels", (Serializable) noteModels);
+                    floatingService.putExtra("tripModel", tripModel);
+                    getActivity().startService(floatingService);
+                }
+            });
+
+            try {
+                //when google map installed
+
+                Uri uri = Uri.parse("https://www.google.co.in/maps/dir/" + "/" + tripModel.getEndPoint());
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                intent.setPackage("com.google.android.apps.maps");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+
+            } catch (ActivityNotFoundException e) {
+                //when google map is not initialize
+                Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.apps.maps");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                //set flag
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+
         }
     }
 }

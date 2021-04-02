@@ -17,10 +17,17 @@ import androidx.transition.Transition;
 import androidx.transition.TransitionListenerAdapter;
 import androidx.transition.TransitionManager;
 
+import com.example.tripremenders.models.MapApi;
 import com.example.tripremenders.R;
+import com.example.tripremenders.models.ResponseFromMap;
+import com.example.tripremenders.models.RetrofitNetworking;
 import com.example.tripremenders.models.TripModel;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PastTripAdapter extends RecyclerView.Adapter<PastTripAdapter.ViewHolder> {
 
@@ -53,11 +60,29 @@ public class PastTripAdapter extends RecyclerView.Adapter<PastTripAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull PastTripAdapter.ViewHolder holder, int position) {
+        MapApi mapsApi = RetrofitNetworking.getRetrofitInstance().create(MapApi.class);
+        Call<ResponseFromMap> call = mapsApi.getDirections(trips.get(position).getStartPoint(),trips.get(position).getEndPoint());
+        call.enqueue(new Callback<ResponseFromMap>() {
 
+
+            @Override
+            public void onResponse(Call<ResponseFromMap> call, Response<ResponseFromMap> response) {
+                if(response.body().routes.size() != 0) {
+
+                    holder.duration.setText(response.body().routes.get(0).legs.get(0).duration.text);
+                    holder.distance.setText(response.body().routes.get(0).legs.get(0).distance.text);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseFromMap> call, Throwable t) {
+
+            }
+                     });
         holder.tripNameTextView.setText(trips.get(position).getName());
         holder.dateTextView.setText(trips.get(position).getDate());
         holder.timeTextView.setText(trips.get(position).getTime());
-        if(trips.get(position).getStatus() == 1) {
+        if (trips.get(position).getStatus() == 1) {
 
             holder.tripStatus.setText("Done");
         }
@@ -70,7 +95,8 @@ public class PastTripAdapter extends RecyclerView.Adapter<PastTripAdapter.ViewHo
             holder.tripeTypeImageView.setImageResource(R.drawable.ic_multiple_stop);
         }
 
-        holder.tripLinearLayout.setOnClickListener(v -> {
+
+            holder.tripLinearLayout.setOnClickListener(v -> {
 
             if (lastLinearLayoutClickOn != null
                     && lastLinearLayoutClickOn != holder.buttonsLinearLayout) {
@@ -103,6 +129,7 @@ public class PastTripAdapter extends RecyclerView.Adapter<PastTripAdapter.ViewHo
         });
 
 
+
     }
 
     public void setTrips(ArrayList<TripModel> trips){
@@ -133,7 +160,8 @@ public class PastTripAdapter extends RecyclerView.Adapter<PastTripAdapter.ViewHo
         ImageView tripeTypeImageView;
 
         LinearLayout buttonsLinearLayout;
-
+         TextView duration;
+         TextView distance;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -148,6 +176,8 @@ public class PastTripAdapter extends RecyclerView.Adapter<PastTripAdapter.ViewHo
             tripeTypeImageView = itemView.findViewById(R.id.trip_type_icon);
             tripLinearLayout = itemView.findViewById(R.id.trip_linear_layout);
             buttonsLinearLayout = itemView.findViewById(R.id.buttons_linear_layout);
+            duration = itemView.findViewById(R.id.duration);
+            distance = itemView.findViewById(R.id.distance);
         }
     }
 }

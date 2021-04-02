@@ -17,7 +17,7 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             app:cardCornerRadius="10dp">
 
             <LinearLayout
@@ -175,19 +175,73 @@
                                 android:text="@string/ex_direction"
                                 android:textColor="@color/black" />
 
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:gravity="center_horizontal"
+                            android:orientation="horizontal">
+
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="bottom"
+                                android:src="@drawable/time" />
+
                             <TextView
-                                android:id="@+id/status"
+                                android:id="@+id/duration"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="end|center"
-                                android:layout_weight="2"
+                                android:layout_gravity="center"
+                                android:layout_marginEnd="16dp"
+                                android:layout_marginRight="16dp"
+                                android:layout_weight="3"
+                                android:text="@string/ex_direction"
+                                android:textColor="@color/black" />
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:gravity="center_horizontal"
+                            android:orientation="horizontal">
+
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="bottom"
+                                android:layout_marginBottom="5dp"
+                                android:src="@drawable/distance" />
+
+                            <TextView
+                                android:id="@+id/distance"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginEnd="16dp"
+                                android:layout_marginRight="16dp"
+                                android:layout_weight="4"
+                                android:text="@string/ex_direction"
+                                android:textColor="@color/black"
+                                />
+                            <TextView
+                                android:id="@+id/status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
                                 android:gravity="center"
+                                android:layout_marginLeft="150dp"
                                 android:text="@string/status"
                                 android:textColor="@color/primary"
                                 android:textSize="20sp"
                                 android:fontFamily="@font/amin"
                                 />
+
                         </LinearLayout>
+
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>

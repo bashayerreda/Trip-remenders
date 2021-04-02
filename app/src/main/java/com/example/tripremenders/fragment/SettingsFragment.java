@@ -1,8 +1,13 @@
 package com.example.tripremenders.fragment;
 
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -18,7 +24,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.tripremenders.MapsActivity;
 import com.example.tripremenders.R;
 import com.example.tripremenders.RegistrationActivity;
-import com.example.tripremenders.adapters.PastTripAdapter;
+import com.example.tripremenders.broadcast.AlertReceiver;
 import com.example.tripremenders.models.NoteModel;
 import com.example.tripremenders.models.NoteViewModel;
 import com.example.tripremenders.models.TripModel;
@@ -36,24 +42,20 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class SettingsFragment  extends Fragment {
-   String profilePicture;
-   TextView textViewUsername;
-    CircleImageView imageViewProfilePicture;
-    FirebaseUser user;
-    private TripViewModel tripViewModel;
-    PastTripAdapter pastTripAdapter;
-    ArrayList<TripModel>trips;
-    FirebaseAuth firebaseAuth;
-    DatabaseReference databaseReference;
-    public static final String SEND_TRIPS_EXTRA = "trips Data";
+public class SettingsFragment extends Fragment {
+
+    private TextView textViewUsername;
+    private CircleImageView imageViewProfilePicture;
+    private List<TripModel>trips;
+
+    public final static String SEND_TRIPS_EXTRA = "trips Data";
 
     @Override
     public void onStart() {
         super.onStart();
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user.getPhotoUrl() != null) {
-            profilePicture = user.getPhotoUrl().toString();
+            String profilePicture = user.getPhotoUrl().toString();
             profilePicture += "?type=large";
             Picasso.get().load(profilePicture).fit().placeholder(R.drawable.user_icon).into(imageViewProfilePicture);
 
@@ -68,7 +70,6 @@ public class SettingsFragment  extends Fragment {
     }
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -77,11 +78,10 @@ public class SettingsFragment  extends Fragment {
     }
 
 
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-          imageViewProfilePicture = view.findViewById(R.id.user_logo);
-          textViewUsername =  view.findViewById(R.id.user_name_settings);
+        imageViewProfilePicture = view.findViewById(R.id.user_logo);
+        textViewUsername = view.findViewById(R.id.user_name_settings);
 
         TextView syncButton = view.findViewById(R.id.sync_button);
         syncButton.setOnClickListener(v -> {
@@ -136,6 +136,8 @@ public class SettingsFragment  extends Fragment {
                 TextView textViewYesLogout = dialog.findViewById(R.id.text_yes_logout);
                 TextView textViewNoLogout = dialog.findViewById(R.id.text_no_logout);
                 textViewYesLogout.setOnClickListener(new View.OnClickListener() {
+
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onClick(View view) {
                         TripViewModel tripViewModel =
@@ -152,6 +154,19 @@ public class SettingsFragment  extends Fragment {
                         dialog.dismiss();
                         LoginManager.getInstance().logOut();
                         FirebaseAuth.getInstance().signOut();
+
+                        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+
+                        Intent updateServiceIntent = new Intent(getActivity(), AlertReceiver.class);
+                        PendingIntent pendingUpdateIntent = PendingIntent.getService(getActivity(), 0, updateServiceIntent, 0);
+
+                        // Cancel alarms
+                        try {
+                            alarmManager.cancel(pendingUpdateIntent);
+                        } catch (Exception e) {
+                            Log.e("AlarmManager", "AlarmManager update was not canceled. " + e.toString());
+                        }
+
                         Intent intent = new Intent(getActivity(), RegistrationActivity.class);
                         startActivity(intent);
                         getActivity().finishAffinity();
@@ -167,25 +182,30 @@ public class SettingsFragment  extends Fragment {
             }
 
         });
+
+
         TextView btnmap = view.findViewById(R.id.map);
+        TripViewModel tripViewModelmap =
+                ViewModelProviders.of(SettingsFragment.this).get(TripViewModel.class);
+        tripViewModelmap.getAllPastTrips().observe(getActivity(), new Observer<List<TripModel>>() {
+            @Override
+            public void onChanged(@Nullable final List<TripModel> tripModels) {
+                trips = tripModels;
+
+            }
+        });
         btnmap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TripViewModel tripViewModel =
-                        ViewModelProviders.of(SettingsFragment.this).get(TripViewModel.class);
-                tripViewModel.getAllPastTrips().observe(getActivity(), new Observer<List<TripModel>>() {
-                            @Override
-                            public void onChanged(@Nullable final List<TripModel> tripModels) {
-                                Intent intent = new Intent(getActivity(), MapsActivity.class);
-                                //intent.putExtra("trips Data", tripViewModel.getAllTrips());
-                                Bundle args = new Bundle();
-                                args.putSerializable(SEND_TRIPS_EXTRA, (Serializable) tripModels);
-                                intent.putExtra(SEND_TRIPS_EXTRA,args);
-                                //startActivity(intent);
-                                startActivity(intent);
-                                getActivity().finish();
-                            }
-                        });
+                if(trips != null) {
+                    Intent intent = new Intent(getActivity(), MapsActivity.class);
+                    Bundle args = new Bundle();
+                    args.putSerializable(SEND_TRIPS_EXTRA, (Serializable) trips);
+                    intent.putExtra(SEND_TRIPS_EXTRA, args);
+                    startActivity(intent);
+                    //getActivity().finish();
+                }
+
 
 
             }
