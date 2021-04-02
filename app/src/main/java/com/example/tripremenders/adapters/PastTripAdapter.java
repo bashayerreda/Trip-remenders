@@ -1,16 +1,20 @@
 package com.example.tripremenders.adapters;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.Slide;
 import androidx.transition.Transition;
@@ -22,6 +26,7 @@ import com.example.tripremenders.R;
 import com.example.tripremenders.models.ResponseFromMap;
 import com.example.tripremenders.models.RetrofitNetworking;
 import com.example.tripremenders.models.TripModel;
+import com.example.tripremenders.models.TripViewModel;
 
 import java.util.ArrayList;
 
@@ -85,6 +90,8 @@ public class PastTripAdapter extends RecyclerView.Adapter<PastTripAdapter.ViewHo
         if (trips.get(position).getStatus() == 1) {
 
             holder.tripStatus.setText("Done");
+        } else if (trips.get(position).getStatus() == 2) {
+            holder.tripStatus.setText("Cancel");
         }
         holder.startPointTextView.setText(trips.get(position).getStartPoint());
         holder.endPointTextView.setText(trips.get(position).getEndPoint());
@@ -128,6 +135,31 @@ public class PastTripAdapter extends RecyclerView.Adapter<PastTripAdapter.ViewHo
                                     View.VISIBLE : View.GONE);
         });
 
+        holder.deleteTripButton.setOnClickListener(v -> {
+
+            final Dialog dialog = new Dialog(context);
+            dialog.setContentView(R.layout.delete_dialog);
+            dialog.setCancelable(false);
+            dialog.show();
+            TextView textViewYesLogout = dialog.findViewById(R.id.text_yes_logout);
+            TextView textViewNoLogout = dialog.findViewById(R.id.text_no_logout);
+            textViewYesLogout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                    TripViewModel tripViewModel = ViewModelProviders.of((FragmentActivity) context).get(TripViewModel.class);
+                    tripViewModel.delete(trips.get(position));
+                }
+            });
+            textViewNoLogout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                }
+            });
+
+        });
+
 
 
     }
@@ -158,6 +190,7 @@ public class PastTripAdapter extends RecyclerView.Adapter<PastTripAdapter.ViewHo
         TextView tripTypeTextView;
         TextView tripStatus;
         ImageView tripeTypeImageView;
+        ImageButton deleteTripButton;
 
         LinearLayout buttonsLinearLayout;
          TextView duration;
@@ -178,6 +211,7 @@ public class PastTripAdapter extends RecyclerView.Adapter<PastTripAdapter.ViewHo
             buttonsLinearLayout = itemView.findViewById(R.id.buttons_linear_layout);
             duration = itemView.findViewById(R.id.duration);
             distance = itemView.findViewById(R.id.distance);
+            deleteTripButton = itemView.findViewById(R.id.delete_trip);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.tripremenders.widget;
 
+import android.app.Application;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -15,16 +16,22 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.core.app.NotificationCompat;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 
 import com.example.tripremenders.R;
 import com.example.tripremenders.models.NoteModel;
 import com.example.tripremenders.models.TripModel;
+import com.example.tripremenders.models.TripRepository;
 import com.example.tripremenders.service.WidgetService;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TimeAlertCustomDialog extends AppCompatDialogFragment {
     private int count ;
@@ -38,12 +45,15 @@ public class TimeAlertCustomDialog extends AppCompatDialogFragment {
     Button cancelButton;
     ArrayList<NoteModel> noteModels;
 
-    public TimeAlertCustomDialog(TripModel trip, boolean sound, ArrayList<NoteModel> noteModels) {
+    Application application;
+
+    public TimeAlertCustomDialog(TripModel trip, boolean sound, ArrayList<NoteModel> noteModels, Application application) {
         this.count = 0 ;
         this.trip = trip;
         this.sound = sound;
         this.setCancelable(false);
         this.noteModels = noteModels;
+        this.application = application;
     }
 
     @Override
@@ -67,17 +77,27 @@ public class TimeAlertCustomDialog extends AppCompatDialogFragment {
             this.dismiss();
             stop();
             getActivity().finish();
-            DisplayTrack(trip.getEndPoint());
+            //DisplayTrack(trip.getEndPoint());
+
+            DisplayTrack();
+
         });
         laterButton.setOnClickListener(v -> {
             this.dismiss();
+            Toast.makeText(getContext(), "laterButton", Toast.LENGTH_SHORT).show();
             stop();
             helper = new NotificationHelper(getActivity());
             sendOnChannel1();
             getActivity().finish();
         });
         cancelButton.setOnClickListener(v -> {
+
+            TripRepository tripRepository = new TripRepository(application);
+            trip.setStatus(2);
+            tripRepository.update(trip);
+
             this.dismiss();
+            Toast.makeText(getContext(), "cancelButton", Toast.LENGTH_SHORT).show();
             stop();
             getActivity().finish();
         });
@@ -166,5 +186,46 @@ public class TimeAlertCustomDialog extends AppCompatDialogFragment {
         NotificationCompat.Builder builder = helper.getChannel1Notification(trip,
                 "Click here to start your trip", getContext());
         helper.getManger().notify(1, builder.build());
+    }
+
+    private void DisplayTrack() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(getContext())) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getActivity().getPackageName()));
+            startActivityForResult(intent, 106);
+
+        } else {
+
+            Intent floatingService = new Intent(getActivity(), WidgetService.class);
+            floatingService.putExtra("noteModels", (Serializable) noteModels);
+            floatingService.putExtra("tripModel", trip);
+            //getActivity().stopService(floatingService);
+
+
+            if(trip.getTripType().equals("Round Trip") || noteModels != null) {
+                getActivity().startService(floatingService);
+            }
+
+
+            try {
+                //when google map installed
+
+                Uri uri = Uri.parse("https://www.google.co.in/maps/dir/" + "/" + trip.getEndPoint());
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                intent.setPackage("com.google.android.apps.maps");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+
+            } catch (ActivityNotFoundException e) {
+                //when google map is not initialize
+                Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.apps.maps");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                //set flag
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+
+        }
     }
 }

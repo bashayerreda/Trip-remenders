@@ -13,6 +13,7 @@ import android.util.Log;
 import com.example.tripremenders.models.NoteModel;
 import com.example.tripremenders.models.NoteViewModel;
 import com.example.tripremenders.models.TripModel;
+import com.example.tripremenders.models.TripRepository;
 import com.example.tripremenders.models.TripViewModel;
 import com.example.tripremenders.service.WidgetService;
 import com.example.tripremenders.widget.TimeAlertCustomDialog;
@@ -70,11 +71,13 @@ public class DialogMessageActivity extends AppCompatActivity {
 
 
                     tripById.removeObserver(this);
-                    
+
                     tripModel.setStatus(1);
                     tripViewModel.update(tripModel);
 
-                    TimeAlertCustomDialog timeAlertCustomDialog = new TimeAlertCustomDialog(tripModel,getIntent().getBooleanExtra("sound",true), notes);
+
+
+                    TimeAlertCustomDialog timeAlertCustomDialog = new TimeAlertCustomDialog(tripModel,getIntent().getBooleanExtra("sound",true), notes, getApplication());
                     timeAlertCustomDialog.show(getSupportFragmentManager(), "DialogTest");
                 }
             });

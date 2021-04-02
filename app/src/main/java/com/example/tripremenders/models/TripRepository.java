@@ -14,7 +14,7 @@ public class TripRepository {
 
     private final TripDao tripDao;
 
-    TripRepository(Application application) {
+    public TripRepository(Application application) {
         TripDatabase tripDatabase = TripDatabase.getDatabase(application);
         tripDao = tripDatabase.tripDao();
 

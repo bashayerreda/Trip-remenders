@@ -264,6 +264,7 @@
                 android:gravity="center">
 
                 <ImageButton
+                    android:id="@+id/delete_trip"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:background="@drawable/button_bg_round"
