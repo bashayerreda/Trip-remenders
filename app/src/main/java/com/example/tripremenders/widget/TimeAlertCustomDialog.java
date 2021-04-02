@@ -20,8 +20,11 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.core.app.NotificationCompat;
 
 import com.example.tripremenders.R;
+import com.example.tripremenders.models.NoteModel;
 import com.example.tripremenders.models.TripModel;
 import com.example.tripremenders.service.WidgetService;
+
+import java.util.ArrayList;
 
 public class TimeAlertCustomDialog extends AppCompatDialogFragment {
     private int count ;
@@ -33,12 +36,14 @@ public class TimeAlertCustomDialog extends AppCompatDialogFragment {
     Button startButton;
     Button laterButton;
     Button cancelButton;
+    ArrayList<NoteModel> noteModels;
 
-    public TimeAlertCustomDialog(TripModel trip, boolean sound) {
+    public TimeAlertCustomDialog(TripModel trip, boolean sound, ArrayList<NoteModel> noteModels) {
         this.count = 0 ;
         this.trip = trip;
         this.sound = sound;
         this.setCancelable(false);
+        this.noteModels = noteModels;
     }
 
     @Override

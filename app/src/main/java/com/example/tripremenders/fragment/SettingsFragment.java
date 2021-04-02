@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -102,6 +103,8 @@ public class SettingsFragment extends Fragment {
 
             LiveData<List<TripModel>> allTrips = tripViewModel.getAllTrips();
             LiveData<List<NoteModel>> allNotes = noteViewModel.getAllNotes();
+
+            Toast.makeText(getActivity(), "Sync Trips", Toast.LENGTH_SHORT).show();
 
             allTrips.observe(getActivity(), new Observer<List<TripModel>>() {
 
