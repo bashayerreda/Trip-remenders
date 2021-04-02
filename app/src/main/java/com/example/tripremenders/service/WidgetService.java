@@ -2,12 +2,14 @@ package com.example.tripremenders.service;
 
 
 import android.app.Service;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
+import android.net.Uri;
+import android.os.Binder;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -15,15 +17,12 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import com.example.tripremenders.R;
 import com.example.tripremenders.adapters.NoteAdapter;
 import com.example.tripremenders.models.NoteModel;
-import com.example.tripremenders.models.NoteViewModel;
 import com.example.tripremenders.models.TripModel;
 
 import java.util.ArrayList;
@@ -43,6 +42,8 @@ public class WidgetService extends Service implements View.OnClickListener {
     private TripModel tripModel;
     private Button returnTrip ;
 
+    private final IBinder binder = new LocalBinder();
+
 
     public WidgetService() { }
 
@@ -51,34 +52,17 @@ public class WidgetService extends Service implements View.OnClickListener {
     public void onCreate() {
         super.onCreate();
 
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putBoolean("WidgetService", true); // Storing boolean - true/false
+        editor.apply(); // commit changes
+
         mFloatingView = LayoutInflater.from(this).inflate(R.layout.floating_widget_item, null);
         collapsedView = mFloatingView.findViewById(R.id.layoutCollapsed);
         expandedView = mFloatingView.findViewById(R.id.layoutExpanded);
         recyclerView = expandedView.findViewById(R.id.floatingWidgetRecyclerView);
         returnTrip = expandedView.findViewById(R.id.returnTrip);
         mFloatingView.findViewById(R.id.buttonClose).setOnClickListener(this);
-
-
-        Log.i(TAG, "WidgetService: onCreate");
-
-
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-
-        tripModel = (TripModel) intent.getSerializableExtra("tripModel");
-        notes = (ArrayList<NoteModel>) intent.getSerializableExtra("noteModels");
-
-        //initialize notes list
-        //getting the widget layout from xml using layout inflater
-        if(tripModel.getTripType().equals(""))
-
-        returnTrip.setOnClickListener(v -> {
-
-
-
-        });
 
         //setting the layout parameters
         WindowManager.LayoutParams params;
@@ -106,32 +90,6 @@ public class WidgetService extends Service implements View.OnClickListener {
 
         mWindowManager.addView(mFloatingView, params);
 
-        //getting the collapsed and expanded view from the floating view
-
-        adapter = new NoteAdapter(WidgetService.this, notes);
-        recyclerView.setLayoutManager(new LinearLayoutManager(WidgetService.this));
-        recyclerView.setAdapter(adapter);
-        //adding click listener to close button and expanded view
-        expandedView.setOnClickListener(this);
-        //check when switching between view s
-        collapsedView.setOnClickListener(v -> {
-            if (collapsedView.getVisibility() == View.VISIBLE && expandedView.getVisibility() == View.VISIBLE) {
-                collapsedView.setVisibility(View.VISIBLE);
-                expandedView.setVisibility(View.GONE);
-            } else {
-                switch (v.getId()) {
-                    case R.id.layoutCollapsed:
-                        Log.i(TAG, "collapsed ");
-                        //switching views
-                        collapsedView.setVisibility(View.VISIBLE);
-                        expandedView.setVisibility(View.VISIBLE);
-                        break;
-                }
-            }
-        });
-
-
-        //adding an touchlistener to make drag movement of the floating widget
         mFloatingView.findViewById(R.id.layoutCollapsed).setOnTouchListener(new View.OnTouchListener() {
             private int initialX;
             private int initialY;
@@ -161,6 +119,70 @@ public class WidgetService extends Service implements View.OnClickListener {
             }
         });
 
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        tripModel = (TripModel) intent.getSerializableExtra("tripModel");
+        notes = (ArrayList<NoteModel>) intent.getSerializableExtra("noteModels");
+
+        //initialize notes list
+        //getting the widget layout from xml using layout inflater
+        if(!tripModel.getTripType().equals("Round Trip")) {
+            returnTrip.setVisibility(View.GONE);
+        } else {
+            returnTrip.setVisibility(View.VISIBLE);
+        }
+
+        returnTrip.setOnClickListener(v -> {
+            try {
+                //when google map installed
+
+                Uri uri = Uri.parse("https://www.google.co.in/maps/dir/" + "/" + tripModel.getEndPoint());
+                Intent googleMapIntent = new Intent(Intent.ACTION_VIEW, uri);
+                googleMapIntent.setPackage("com.google.android.apps.maps");
+                googleMapIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(googleMapIntent);
+
+            } catch (ActivityNotFoundException e) {
+                //when google map is not initialize
+                Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.apps.maps");
+                Intent googlePlayStoreIntent = new Intent(Intent.ACTION_VIEW, uri);
+                //set flag
+                googlePlayStoreIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(googlePlayStoreIntent);
+            }
+        });
+
+
+
+        //getting the collapsed and expanded view from the floating view
+
+        adapter = new NoteAdapter(WidgetService.this, notes);
+        recyclerView.setLayoutManager(new LinearLayoutManager(WidgetService.this));
+        recyclerView.setAdapter(adapter);
+        //adding click listener to close button and expanded view
+        expandedView.setOnClickListener(this);
+        //check when switching between view s
+        collapsedView.setOnClickListener(v -> {
+            if (collapsedView.getVisibility() == View.VISIBLE && expandedView.getVisibility() == View.VISIBLE) {
+                collapsedView.setVisibility(View.VISIBLE);
+                expandedView.setVisibility(View.GONE);
+            } else {
+                switch (v.getId()) {
+                    case R.id.layoutCollapsed:
+                        Log.i(TAG, "collapsed ");
+                        //switching views
+                        collapsedView.setVisibility(View.VISIBLE);
+                        expandedView.setVisibility(View.VISIBLE);
+                        break;
+                }
+            }
+        });
+
+
+        //adding an touchlistener to make drag movement of the floating widget
 
 
 
@@ -169,13 +191,24 @@ public class WidgetService extends Service implements View.OnClickListener {
 
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return binder;
+    }
+
+    public class LocalBinder extends Binder {
+        public WidgetService getService() {
+            return WidgetService.this;
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         if (mFloatingView != null) mWindowManager.removeView(mFloatingView);
+
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putBoolean("WidgetService", false); // Storing boolean - true/false
+        editor.apply(); // com
     }
 
     @Override
@@ -193,5 +226,9 @@ public class WidgetService extends Service implements View.OnClickListener {
                 stopSelf();
                 break;
         }
+    }
+
+    public void stopService() {
+        stopSelf();
     }
 }
