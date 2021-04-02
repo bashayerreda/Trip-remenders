@@ -139,7 +139,7 @@ public class WidgetService extends Service implements View.OnClickListener {
             try {
                 //when google map installed
 
-                Uri uri = Uri.parse("https://www.google.co.in/maps/dir/" + "/" + tripModel.getEndPoint());
+                Uri uri = Uri.parse("https://www.google.co.in/maps/dir/" + "/" + tripModel.getStartPoint());
                 Intent googleMapIntent = new Intent(Intent.ACTION_VIEW, uri);
                 googleMapIntent.setPackage("com.google.android.apps.maps");
                 googleMapIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
