@@ -78,17 +78,26 @@ public class WidgetService extends Service implements View.OnClickListener {
         notes.add(new NoteModel("test"));
         notes.add(new NoteModel("test"));
         notes.add(new NoteModel("test"));
+        notes.add(new NoteModel("test"));
+        notes.add(new NoteModel("test"));
+        notes.add(new NoteModel("test"));
+        notes.add(new NoteModel("test"));
+        notes.add(new NoteModel("test"));
+        notes.add(new NoteModel("test"));
+        notes.add(new NoteModel("test"));
+        notes.add(new NoteModel("test"));
+        notes.add(new NoteModel("test"));
         //getting the widget layout from xml using layout inflater
         mFloatingView = LayoutInflater.from(this).inflate(R.layout.floating_widget_item, null);
         //setting the layout parameters
-         WindowManager.LayoutParams params ;
+        WindowManager.LayoutParams params;
 
         //getting windows services and adding the floating view to it
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
 
-              params = new WindowManager.LayoutParams(
+            params = new WindowManager.LayoutParams(
                     WindowManager.LayoutParams.WRAP_CONTENT,
                     WindowManager.LayoutParams.WRAP_CONTENT,
                     WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
@@ -96,7 +105,7 @@ public class WidgetService extends Service implements View.OnClickListener {
                     PixelFormat.TRANSLUCENT);
 
         } else {
-             params = new WindowManager.LayoutParams(
+            params = new WindowManager.LayoutParams(
                     WindowManager.LayoutParams.WRAP_CONTENT,
                     WindowManager.LayoutParams.WRAP_CONTENT,
                     WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,

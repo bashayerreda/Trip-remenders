@@ -37,7 +37,7 @@
         <!-- this is the expanded layout -->
         <LinearLayout
             android:id="@+id/layoutExpanded"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="50dp"
             android:background="@android:color/black"
@@ -47,7 +47,7 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/floatingWidgetRecyclerView"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
                 />

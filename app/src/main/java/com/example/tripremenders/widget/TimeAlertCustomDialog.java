@@ -24,7 +24,7 @@ import com.example.tripremenders.models.TripModel;
 import com.example.tripremenders.service.WidgetService;
 
 public class TimeAlertCustomDialog extends AppCompatDialogFragment {
-    private int count = 0;
+    private int count ;
     MediaPlayer player;
     TripModel trip;
     boolean sound;
@@ -35,6 +35,7 @@ public class TimeAlertCustomDialog extends AppCompatDialogFragment {
     Button cancelButton;
 
     public TimeAlertCustomDialog(TripModel trip, boolean sound) {
+        this.count = 0 ;
         this.trip = trip;
         this.sound = sound;
         this.setCancelable(false);
@@ -50,22 +51,23 @@ public class TimeAlertCustomDialog extends AppCompatDialogFragment {
         builder.setView(view);
 
         if (sound) {
-            play(view);
+            play();
         }
+
         tripName = view.findViewById(R.id.trip_name);
         startButton = view.findViewById(R.id.start);
         laterButton = view.findViewById(R.id.later);
         cancelButton = view.findViewById(R.id.cancel);
         startButton.setOnClickListener(v -> {
             this.dismiss();
-            stop(view);
+            stop();
             getActivity().finish();
             DisplayTrack(trip.getEndPoint());
         });
         laterButton.setOnClickListener(v -> {
             this.dismiss();
             Toast.makeText(getContext(), "laterButton", Toast.LENGTH_SHORT).show();
-            stop(view);
+            stop();
             helper = new NotificationHelper(getActivity());
             sendOnChannel1();
             getActivity().finish();
@@ -73,7 +75,7 @@ public class TimeAlertCustomDialog extends AppCompatDialogFragment {
         cancelButton.setOnClickListener(v -> {
             this.dismiss();
             Toast.makeText(getContext(), "cancelButton", Toast.LENGTH_SHORT).show();
-            stop(view);
+            stop();
             getActivity().finish();
         });
 
@@ -81,22 +83,32 @@ public class TimeAlertCustomDialog extends AppCompatDialogFragment {
         return builder.create();
     }
 
-    public void play(View view) {
+    public void play() {
         if (player == null) {
             player = MediaPlayer.create(getActivity(), R.raw.alarm_clock);
             player.setOnCompletionListener(mp -> {
-                if (count < 2) {
+                count++;
+                if (count < 4) {
+                    Log.i("TAG", "play: yes");
                     player.start();
                 } else {
-                    player.stop();
+                    Log.i("TAG", "play: no");
+                    stop();
                 }
             });
         }
         player.start();
-        count++;
+
+        Log.i("TAG", "play: ="+count);
     }
 
-    public void stop(View view) {
+    @Override
+    public void onStop() {
+        super.onStop();
+        stop();
+    }
+
+    public void stop() {
         if (player != null) {
             player.release();
             player = null;

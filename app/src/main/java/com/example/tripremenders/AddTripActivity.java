@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -56,14 +57,13 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
 //    private final String TAG_SPINNER = "TAG_SPINNER";
 
     private Spinner spinner;
+    Toolbar toolbar;
     private ImageView trip_type_image, timePicker, datePicker;
     private EditText tripName, startPoint, endPoint;
     private EditText time, date;
     private Button save;
     private TripModel model;
-
     private Calendar calendar;
-
     private TripViewModel tripViewModel;
 
 
@@ -84,6 +84,8 @@ public class AddTripActivity extends AppCompatActivity implements AdapterView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_trip);
+        toolbar = findViewById(R.id.myToolbar);
+        toolbar.setTitle("Add Trip");
         final TripModel editTrip = (TripModel) getIntent().getSerializableExtra("trip");
 
         model = new TripModel();

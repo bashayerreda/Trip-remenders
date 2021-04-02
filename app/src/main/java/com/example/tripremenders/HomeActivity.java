@@ -38,8 +38,9 @@ public class HomeActivity extends AppCompatActivity {
     ViewPager viewPager;
     TabLayout tabLayout;
     Toolbar toolbar;
-      FirebaseAuth firebaseAuth;
-      FirebaseUser firebaseUser;
+    FirebaseAuth firebaseAuth;
+    FirebaseUser firebaseUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +49,7 @@ public class HomeActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.pager);
         tabLayout = findViewById(R.id.tab_layout);
         toolbar = findViewById(R.id.myToolbar);
-        toolbar.setTitle("");
+        toolbar.setTitle("Tripo");
         setSupportActionBar(toolbar);
         setPagerAdapter();
         setTabLayout();
@@ -59,7 +60,7 @@ public class HomeActivity extends AppCompatActivity {
             Picasso.get().load(profilePicture).fit().placeholder(R.drawable.user_icon).into(imageViewProfilePicture);
         }*/
         //firebaseAuth.getCurrentUser();
- //firebaseUser.getUid();
+        //firebaseUser.getUid();
 
         final boolean getDataFromFirebase =
                 getIntent().getBooleanExtra("getDataFromFirebase", false);
@@ -138,7 +139,7 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.addTrip) {
             //Toast.makeText(this, "add More", Toast.LENGTH_SHORT).show();
-            startActivityForResult(new Intent(this, AddTripActivity.class),100);
+            startActivityForResult(new Intent(this, AddTripActivity.class), 100);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -154,7 +155,6 @@ public class HomeActivity extends AppCompatActivity {
 
         backPressedTime = System.currentTimeMillis();
     }
-
 
 
     @Override
